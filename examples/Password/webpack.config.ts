@@ -16,7 +16,9 @@ const config: Configuration = {
   },
 
   plugins: [
-    new CircularDependencyPlugin()
+    new CircularDependencyPlugin({
+      failOnError: true
+    })
   ],
 
   resolve: {
