@@ -1,6 +1,10 @@
 import path from 'path';
 import { Configuration } from 'webpack';
 
+// FIXME See Type definitions for TypeScript https://github.com/aackerman/circular-dependency-plugin/issues/17
+// @ts-ignore
+import CircularDependencyPlugin from 'circular-dependency-plugin';
+
 const config: Configuration = {
   entry: {
     App: './App.tsx'
@@ -10,6 +14,10 @@ const config: Configuration = {
     path: path.join(__dirname, 'build'),
     filename: '[name].js'
   },
+
+  plugins: [
+    new CircularDependencyPlugin()
+  ],
 
   resolve: {
     extensions: ['.js', '.ts', '.tsx']
