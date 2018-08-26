@@ -27,7 +27,7 @@ export class Input extends React.Component<InputProps, InputState> {
   };
   context!: InputContext;
 
-  static defaultProps: InputProps = {
+  static defaultProps = {
     classes: {
       hasErrors: 'has-errors',
       hasWarnings: 'has-warnings',

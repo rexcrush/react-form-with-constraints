@@ -56,7 +56,7 @@ interface FieldFeedbackState {
 export type FieldFeedbackContext = FormWithConstraintsChildContext & FieldFeedbacksChildContext & Partial<AsyncChildContext>;
 
 export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackProps> extends React.Component<Props, FieldFeedbackState> {
-  static defaultProps: FieldFeedbackProps = {
+  static defaultProps = {
     when: () => true,
     classes: {
       error: 'error',
