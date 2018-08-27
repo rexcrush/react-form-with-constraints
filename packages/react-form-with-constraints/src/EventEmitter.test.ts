@@ -4,9 +4,9 @@ import clearArray from './clearArray';
 // See How to convert a plain object into an ES6 Map? https://stackoverflow.com/questions/36644438
 const toMap = (object: object) => new Map(Object.entries(object));
 
-const listener10 = jest.fn().mockReturnValue(10);
-const listener11 = jest.fn().mockReturnValue(11);
-const listener20 = jest.fn().mockReturnValue(20);
+const listener10 = jest.fn<10>().mockReturnValue(10);
+const listener11 = jest.fn<11>().mockReturnValue(11);
+const listener20 = jest.fn<20>().mockReturnValue(20);
 
 beforeEach(() => {
   listener10.mockClear();
@@ -15,7 +15,7 @@ beforeEach(() => {
 });
 
 test('addListener', () => {
-  const eventEmitter = new EventEmitter();
+  const eventEmitter = new EventEmitter<[], number>();
   expect(eventEmitter.listeners).toEqual(toMap({}));
 
   eventEmitter.addListener('event1', listener10);
@@ -42,7 +42,7 @@ test('addListener', () => {
 
 describe('emit', () => {
   test('with and without args', async () => {
-    const eventEmitter = new EventEmitter();
+    const eventEmitter = new EventEmitter<[] | [string], number>();
     eventEmitter.addListener('event1', listener10);
     eventEmitter.addListener('event1', listener11);
     eventEmitter.addListener('event2', listener20);
@@ -63,7 +63,7 @@ describe('emit', () => {
     expect(listener11).toHaveBeenLastCalledWith('arg1');
     expect(listener20).toHaveBeenCalledTimes(0);
 
-    ret = await eventEmitter.emit('event1', 'arg1', 'arg2');
+    ret = await eventEmitter.emit('event1', 'arg1', 'arg2'); // FIXME Ne devrait pas fonctionner avec TypeScript
     expect(ret).toEqual([10, 11]);
     expect(listener10).toHaveBeenCalledTimes(3);
     expect(listener10).toHaveBeenLastCalledWith('arg1', 'arg2');
@@ -80,7 +80,7 @@ describe('emit', () => {
   });
 
   test('unknown event', async () => {
-    const eventEmitter = new EventEmitter();
+    const eventEmitter = new EventEmitter<[], number>();
     eventEmitter.addListener('event1', listener10);
 
     // Assert disabled: mess with the unit tests
@@ -91,7 +91,7 @@ describe('emit', () => {
   });
 
   test('no listener', async () => {
-    const eventEmitter = new EventEmitter();
+    const eventEmitter = new EventEmitter<[], number>();
     eventEmitter.addListener('event1', listener10);
     clearArray(eventEmitter.listeners.get('event1')!);
 
@@ -109,7 +109,7 @@ describe('emit', () => {
 
 describe('removeListener()', () => {
   test('known event', () => {
-    const eventEmitter = new EventEmitter();
+    const eventEmitter = new EventEmitter<[], number>();
     eventEmitter.addListener('event1', listener10);
     eventEmitter.addListener('event1', listener11);
     expect(eventEmitter.listeners).toEqual(toMap({
@@ -126,7 +126,7 @@ describe('removeListener()', () => {
   });
 
   test('unknown event', () => {
-    const eventEmitter = new EventEmitter();
+    const eventEmitter = new EventEmitter<[], number>();
     eventEmitter.addListener('event1', listener10);
     expect(eventEmitter.listeners).toEqual(toMap({
       event1: [listener10]
@@ -144,7 +144,7 @@ describe('removeListener()', () => {
   test('no listener', () => {
     const unknownListener = jest.fn();
 
-    const eventEmitter = new EventEmitter();
+    const eventEmitter = new EventEmitter<[], number>();
     eventEmitter.addListener('event1', listener10);
     expect(eventEmitter.listeners).toEqual(toMap({
       event1: [listener10]
@@ -160,7 +160,7 @@ describe('removeListener()', () => {
   });
 
   test('multiple listeners', () => {
-    const eventEmitter = new EventEmitter();
+    const eventEmitter = new EventEmitter<[], number>();
     eventEmitter.addListener('event1', listener10);
     eventEmitter.addListener('event1', listener11);
 

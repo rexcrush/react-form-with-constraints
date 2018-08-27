@@ -6,14 +6,14 @@ export enum FieldEvent {
   Removed = 'FIELD_REMOVED'
 }
 
-export class FieldsStore extends EventEmitter {
-  fields = new Array<Field>();
+export class FieldsStore extends EventEmitter<[Field | string], void> {
+  fields = new Array<Readonly<Field>>();
 
   clearFieldsValidations() {
     this.fields.forEach(field => field.clearValidations());
   }
 
-  getField(fieldName: string): Readonly<Field> | undefined {
+  getField(fieldName: string) {
     const fields = this.fields.filter(_field => _field.name === fieldName);
     //console.assert(fields.length === 1, `Unknown field '${fieldName}'`);
     return fields.length === 1 ? fields[0] : undefined;
