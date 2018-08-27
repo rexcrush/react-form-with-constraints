@@ -45,7 +45,6 @@ export class FieldFeedback extends _FieldFeedback {
     // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
     ..._FieldFeedback.defaultProps,
     classes: {
-      ..._FieldFeedback.defaultProps.classes,
       error: 'invalid-feedback',
       warning: 'warning-feedback',
       info: 'info-feedback',
@@ -60,7 +59,6 @@ export class FieldFeedbackTooltip extends _FieldFeedback {
     // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
     ..._FieldFeedback.defaultProps,
     classes: {
-      ..._FieldFeedback.defaultProps.classes,
       error: 'invalid-tooltip',
       warning: 'warning-tooltip',
       info: 'info-tooltip',
@@ -72,9 +70,6 @@ export class FieldFeedbackTooltip extends _FieldFeedback {
 export class Input extends _Input {
   static defaultProps = {
     classes: {
-      // See https://github.com/facebook/react/issues/3725#issuecomment-169163998
-      // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
-      ..._Input.defaultProps.classes,
       hasErrors: 'is-invalid',
       hasWarnings: undefined,
       hasInfos: undefined,
