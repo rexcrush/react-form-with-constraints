@@ -1,6 +1,6 @@
 import {
   FormWithConstraints, Input as _Input,
-  FieldFeedbacks, Async, FieldFeedback as _FieldFeedback
+  FieldFeedbacks, Async, FieldFeedback as _FieldFeedback, FieldFeedbackProps
 } from 'react-form-with-constraints';
 
 // ## Error
@@ -40,7 +40,7 @@ import {
 // see https://github.com/twbs/bootstrap/blob/v4.1.2/scss/_forms.scss#L245
 
 export class FieldFeedback extends _FieldFeedback {
-  static defaultProps = {
+  static defaultProps: FieldFeedbackProps = {
     // See https://github.com/facebook/react/issues/3725#issuecomment-169163998
     // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
     ..._FieldFeedback.defaultProps,
@@ -55,7 +55,7 @@ export class FieldFeedback extends _FieldFeedback {
 }
 
 export class FieldFeedbackTooltip extends _FieldFeedback {
-  static defaultProps = {
+  static defaultProps: FieldFeedbackProps = {
     // See https://github.com/facebook/react/issues/3725#issuecomment-169163998
     // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
     ..._FieldFeedback.defaultProps,
