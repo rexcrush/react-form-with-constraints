@@ -76,8 +76,8 @@ export class Input extends _Input {
       // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
       ..._Input.defaultProps.classes,
       hasErrors: 'is-invalid',
-      //hasWarnings: 'is-warning',
-      //hasInfos: 'is-info',
+      hasWarnings: undefined,
+      hasInfos: undefined,
       isValid: 'is-valid'
     }
   };
