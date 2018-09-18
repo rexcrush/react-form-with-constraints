@@ -1,6 +1,6 @@
 import {
   FormWithConstraints, Input as _Input,
-  FieldFeedbacks, Async, FieldFeedback as _FieldFeedback, FieldFeedbackProps
+  FieldFeedbacks, Async, FieldFeedback as _FieldFeedback
 } from 'react-form-with-constraints';
 
 // ## Error
@@ -40,11 +40,12 @@ import {
 // see https://github.com/twbs/bootstrap/blob/v4.1.2/scss/_forms.scss#L245
 
 export class FieldFeedback extends _FieldFeedback {
-  static defaultProps: FieldFeedbackProps = {
+  static defaultProps = {
     // See https://github.com/facebook/react/issues/3725#issuecomment-169163998
     // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
-    ..._FieldFeedback.defaultProps,
+    ...(_FieldFeedback as any).defaultProps, // FIXME See https://github.com/Microsoft/TypeScript/issues/26395
     classes: {
+      ...(_FieldFeedback as any).defaultProps.classes, // FIXME See https://github.com/Microsoft/TypeScript/issues/26395
       error: 'invalid-feedback',
       warning: 'warning-feedback',
       info: 'info-feedback',
@@ -54,11 +55,12 @@ export class FieldFeedback extends _FieldFeedback {
 }
 
 export class FieldFeedbackTooltip extends _FieldFeedback {
-  static defaultProps: FieldFeedbackProps = {
+  static defaultProps = {
     // See https://github.com/facebook/react/issues/3725#issuecomment-169163998
     // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
-    ..._FieldFeedback.defaultProps,
+    ...(_FieldFeedback as any).defaultProps, // FIXME See https://github.com/Microsoft/TypeScript/issues/26395
     classes: {
+      ...(_FieldFeedback as any).defaultProps.classes, // FIXME See https://github.com/Microsoft/TypeScript/issues/26395
       error: 'invalid-tooltip',
       warning: 'warning-tooltip',
       info: 'info-tooltip',
@@ -70,9 +72,12 @@ export class FieldFeedbackTooltip extends _FieldFeedback {
 export class Input extends _Input {
   static defaultProps = {
     classes: {
+      // See https://github.com/facebook/react/issues/3725#issuecomment-169163998
+      // See React.Component.defaultProps objects are overridden, not merged? https://stackoverflow.com/q/40428847
+      ..._Input.defaultProps.classes,
       hasErrors: 'is-invalid',
-      hasWarnings: undefined,
-      hasInfos: undefined,
+      //hasWarnings: 'is-warning',
+      //hasInfos: 'is-info',
       isValid: 'is-valid'
     }
   };

@@ -6,8 +6,10 @@ import Field from './Field';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   innerRef?: React.Ref<HTMLInputElement>;
-  classes?: {
+
+  classes: {
     [index: string]: string | undefined;
+    // FIXME Remove ? when @types/react is updated, see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html#support-for-defaultprops-in-jsx
     hasErrors?: string;
     hasWarnings?: string;
     hasInfos?: string;
@@ -27,7 +29,7 @@ export class Input extends React.Component<InputProps, InputState> {
   };
   context!: InputContext;
 
-  static defaultProps: InputProps = {
+  static defaultProps = {
     classes: {
       hasErrors: 'has-errors',
       hasWarnings: 'has-warnings',

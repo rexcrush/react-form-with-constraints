@@ -112,7 +112,7 @@ export interface FieldFeedbackProps extends _FieldFeedbackBaseProps, TextProps {
 
 // See Clone a js object except for one key https://stackoverflow.com/q/34698905
 const omitClassesDefaultProps = () => {
-  const { classes, ...otherProps } = _FieldFeedback.defaultProps;
+  const { classes, ...otherProps } = (_FieldFeedback as any).defaultProps; // FIXME See https://github.com/Microsoft/TypeScript/issues/26395
   return otherProps;
 };
 

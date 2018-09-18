@@ -1,9 +1,9 @@
 import React from 'react';
 import { mount as _mount, shallow as _shallow } from 'enzyme';
 
-import { FormWithConstraints, FormWithConstraintsChildContext, FieldFeedback, FieldFeedbacksProps, ValidateFieldEvent } from './index';
+import { FormWithConstraints, FormWithConstraintsChildContext, FieldFeedbacks, FieldFeedbacksProps, FieldFeedback, ValidateFieldEvent } from './index';
 import { input_username_valueMissing, input_unknown_valueMissing, input_username_valid } from './InputElementMock';
-import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
+//import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
 import beautifyHtml from './beautifyHtml';
 
 const shallow = (node: React.ReactElement<FieldFeedbacksProps>, options: {context: FormWithConstraintsChildContext}) =>
@@ -192,9 +192,7 @@ describe('render()', () => {
       {context: {form}}
     );
 
-    expect(wrapper.html()).toEqual(
-      '<span data-feedbacks="0"></span>'
-    );
+    expect(wrapper.html()).toEqual(null);
   });
 
   test('children', async () => {
@@ -215,10 +213,8 @@ describe('render()', () => {
       }
     ]);
 
-    expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
-      <span data-feedbacks="0">
-        <span data-feedback="0.0" class="error" style="display: block;">Suffering from being missing</span>
-      </span>`
+    expect(wrapper.html()).toEqual(
+      `<span data-feedback="0.0" class="error" style="display: block;">Suffering from being missing</span>`
     );
   });
 
@@ -243,11 +239,9 @@ describe('render()', () => {
     ]);
 
     expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
-      <span data-feedbacks="0">
-        <div>
-          <span data-feedback="0.0" class="error" style="display: block;">Suffering from being missing</span>
-        </div>
-      </span>`
+      <div>
+        <span data-feedback="0.0" class="error" style="display: block;">Suffering from being missing</span>
+      </div>`
     );
   });
 
@@ -262,9 +256,7 @@ describe('render()', () => {
     const fields = await form.validateFields(input_unknown_valueMissing);
     expect(fields).toEqual([]);
 
-    expect(wrapper.html()).toEqual(
-      '<span data-feedbacks="0"></span>'
-    );
+    expect(wrapper.html()).toEqual(null);
   });
 
   describe('stop prop', () => {
@@ -291,11 +283,9 @@ describe('render()', () => {
       ]);
 
       expect(beautifyHtml(wrapper.html(), '        ')).toEqual(`\
-        <span data-feedbacks="0">
-          <span data-feedback="0.0" class="error" style="display: block;">Suffering from being missing</span>
-          <span data-feedback="0.1" class="error" style="display: block;">Suffering from being missing</span>
-          <span data-feedback="0.2" class="error" style="display: block;">Suffering from being missing</span>
-        </span>`
+        <span data-feedback="0.0" class="error" style="display: block;">Suffering from being missing</span>
+        <span data-feedback="0.1" class="error" style="display: block;">Suffering from being missing</span>
+        <span data-feedback="0.2" class="error" style="display: block;">Suffering from being missing</span>`
       );
     });
 
@@ -321,10 +311,8 @@ describe('render()', () => {
         }
       ]);
 
-      expect(beautifyHtml(wrapper.html(), '        ')).toEqual(`\
-        <span data-feedbacks="0">
-          <span data-feedback="0.0" class="error" style="display: block;">Suffering from being missing</span>
-        </span>`
+      expect(wrapper.html()).toEqual(
+        `<span data-feedback="0.0" class="error" style="display: block;">Suffering from being missing</span>`
       );
     });
 
@@ -350,11 +338,9 @@ describe('render()', () => {
         }
       ]);
 
-      expect(beautifyHtml(wrapper.html(), '        ')).toEqual(`\
-        <span data-feedbacks="0">
-          <span data-feedback="0.0" class="warning" style="display: block;">Suffering from being missing</span>
-          <span data-feedback="0.1" class="error" style="display: block;">Suffering from being missing</span>
-        </span>`
+      expect(wrapper.html()).toEqual(`\
+        <span data-feedback="0.0" class="warning" style="display: block;">Suffering from being missing</span>
+        <span data-feedback="0.1" class="error" style="display: block;">Suffering from being missing</span>`
       );
     });
   });

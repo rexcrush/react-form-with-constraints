@@ -100,20 +100,14 @@ describe('FormWithConstraints', () => {
     expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
       <form>
         <input name="username" class="form-control is-invalid">
-        <span data-feedbacks="0">
-          <span data-feedback="0.3" class="invalid-feedback" style="display: block;">Username 'john' already taken, choose another</span>
-        </span>
+        <span data-feedback="0.3" class="invalid-feedback" style="display: block;">Username 'john' already taken, choose another</span>
         <input type="password" name="password" class="form-control is-valid">
-        <span data-feedbacks="1">
-          <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
-          <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
-          <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
-          <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
+        <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
+        <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
+        <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
         <input type="password" name="passwordConfirm" class="is-invalid">
-        <span data-feedbacks="2">
-          <span data-feedback="2.0" class="invalid-feedback" style="display: block;">Not the same password</span>
-        </span>
+        <span data-feedback="2.0" class="invalid-feedback" style="display: block;">Not the same password</span>
       </form>`
     );
 
@@ -133,20 +127,14 @@ describe('FormWithConstraints', () => {
     expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
       <form>
         <input name="username" class="form-control is-invalid">
-        <span data-feedbacks="0">
-          <span data-feedback="0.3" class="invalid-feedback" style="display: block;">Username 'john' already taken, choose another</span>
-        </span>
+        <span data-feedback="0.3" class="invalid-feedback" style="display: block;">Username 'john' already taken, choose another</span>
         <input type="password" name="password" class="form-control is-valid">
-        <span data-feedbacks="1">
-          <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
-          <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
-          <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
-          <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
+        <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
+        <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
+        <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
         <input type="password" name="passwordConfirm" class="is-invalid">
-        <span data-feedbacks="2">
-          <span data-feedback="2.0" class="invalid-feedback" style="display: block;">Not the same password</span>
-        </span>
+        <span data-feedback="2.0" class="invalid-feedback" style="display: block;">Not the same password</span>
       </form>`
     );
 
@@ -155,11 +143,8 @@ describe('FormWithConstraints', () => {
     expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
       <form>
         <input name="username" class="form-control">
-        <span data-feedbacks="0"></span>
         <input type="password" name="password" class="form-control">
-        <span data-feedbacks="1"></span>
         <input type="password" name="passwordConfirm">
-        <span data-feedbacks="2"></span>
       </form>`
     );
 
@@ -180,21 +165,15 @@ describe('FormWithConstraints', () => {
     expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
       <form>
         <input name="username" class="form-control is-valid">
-        <span data-feedbacks="0">
-          <span data-feedback="0.4" class="info-feedback" style="display: block;">Username 'jimmy' available</span>
-          <span data-feedback="0.2" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="0.4" class="info-feedback" style="display: block;">Username 'jimmy' available</span>
+        <span data-feedback="0.2" class="valid-feedback" style="display: block;">Looks good!</span>
         <input type="password" name="password" class="form-control is-valid">
-        <span data-feedbacks="1">
-          <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
-          <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
-          <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
-          <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
+        <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
+        <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
+        <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
         <input type="password" name="passwordConfirm" class="is-valid">
-        <span data-feedbacks="2">
-          <span data-feedback="2.1" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="2.1" class="valid-feedback" style="display: block;">Looks good!</span>
       </form>`
     );
 
@@ -262,21 +241,15 @@ describe('Async', () => {
     expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
       <form>
         <input name="username" class="form-control is-valid">
-        <span data-feedbacks="0">
-          <span data-feedback="0.3" class="info-feedback" style="display: block;">Username 'jimmy' available</span>
-          <span data-feedback="0.2" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="0.3" class="info-feedback" style="display: block;">Username 'jimmy' available</span>
+        <span data-feedback="0.2" class="valid-feedback" style="display: block;">Looks good!</span>
         <input type="password" name="password" class="form-control is-valid">
-        <span data-feedbacks="1">
-          <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
-          <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
-          <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
-          <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
+        <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
+        <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
+        <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
         <input type="password" name="passwordConfirm" class="is-valid">
-        <span data-feedbacks="2">
-          <span data-feedback="2.1" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="2.1" class="valid-feedback" style="display: block;">Looks good!</span>
       </form>`
     );
 
@@ -333,20 +306,14 @@ describe('Async', () => {
     expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
       <form>
         <input name="username" class="form-control is-invalid">
-        <span data-feedbacks="0">
-          <span data-feedback="0.3" class="invalid-feedback" style="display: block;">Something wrong with username 'error'</span>
-        </span>
+        <span data-feedback="0.3" class="invalid-feedback" style="display: block;">Something wrong with username 'error'</span>
         <input type="password" name="password" class="form-control is-valid">
-        <span data-feedbacks="1">
-          <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
-          <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
-          <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
-          <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
-        </span>
+        <span data-feedback="1.3" class="warning-feedback" style="display: block;">Should contain small letters</span>
+        <span data-feedback="1.4" class="warning-feedback" style="display: block;">Should contain capital letters</span>
+        <span data-feedback="1.5" class="warning-feedback" style="display: block;">Should contain special characters</span>
+        <span data-feedback="1.6" class="valid-feedback" style="display: block;">Looks good!</span>
         <input type="password" name="passwordConfirm" class="is-invalid">
-        <span data-feedbacks="2">
-          <span data-feedback="2.0" class="invalid-feedback" style="display: block;">Not the same password</span>
-        </span>
+        <span data-feedback="2.0" class="invalid-feedback" style="display: block;">Not the same password</span>
       </form>`
     );
 

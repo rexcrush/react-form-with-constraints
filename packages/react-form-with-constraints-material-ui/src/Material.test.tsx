@@ -106,9 +106,7 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="true" class="MuiInput-input-\\d+" name="username" type="text" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+ MuiFormHelperText-error-\\d+">
-            <span data-feedbacks="0">
-              <span data-feedback="0.3" class="FieldFeedback-root-\\d+ error" style="display: block;">Username 'john' already taken, choose another</span>
-            </span>
+            <span data-feedback="0.3" class="FieldFeedback-root-\\d+ error" style="display: block;">Username 'john' already taken, choose another</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -117,12 +115,10 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" id="password" name="password" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="1">
-              <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
-              <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
-              <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
-              <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
+            <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
+            <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
+            <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -130,9 +126,7 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="true" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" name="passwordConfirm" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+ MuiFormHelperText-error-\\d+">
-            <span data-feedbacks="2">
-              <span data-feedback="2.0" class="FieldFeedback-root-\\d+ error" style="display: block;">Not the same password</span>
-            </span>
+            <span data-feedback="2.0" class="FieldFeedback-root-\\d+ error" style="display: block;">Not the same password</span>
           </p>
         </div>
       </form>`
@@ -158,9 +152,7 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="true" class="MuiInput-input-\\d+" name="username" type="text" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+ MuiFormHelperText-error-\\d+">
-            <span data-feedbacks="0">
-              <span data-feedback="0.3" class="FieldFeedback-root-\\d+ error" style="display: block;">Username 'john' already taken, choose another</span>
-            </span>
+            <span data-feedback="0.3" class="FieldFeedback-root-\\d+ error" style="display: block;">Username 'john' already taken, choose another</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -169,12 +161,10 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" id="password" name="password" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="1">
-              <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
-              <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
-              <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
-              <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
+            <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
+            <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
+            <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -182,9 +172,7 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="true" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" name="passwordConfirm" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+ MuiFormHelperText-error-\\d+">
-            <span data-feedbacks="2">
-              <span data-feedback="2.0" class="FieldFeedback-root-\\d+ error" style="display: block;">Not the same password</span>
-            </span>
+            <span data-feedback="2.0" class="FieldFeedback-root-\\d+ error" style="display: block;">Not the same password</span>
           </p>
         </div>
       </form>`
@@ -198,26 +186,20 @@ describe('FormWithConstraints', () => {
           <div class="MuiInput-root-\\d+ MuiInput-formControl-\\d+ MuiInput-underline-\\d+">
             <input aria-invalid="false" class="MuiInput-input-\\d+" name="username" type="text" value="">
           </div>
-          <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="0"></span>
-          </p>
+          <p class="MuiFormHelperText-root-\\d+"></p>
         </div>
         <div class="MuiFormControl-root-\\d+">
           <label class="MuiFormLabel-root-\\d+ MuiInputLabel-root-\\d+ MuiInputLabel-formControl-\\d+ MuiInputLabel-animated-\\d+" data-shrink="false" for="password">Password</label>
           <div class="MuiInput-root-\\d+ MuiInput-formControl-\\d+ MuiInput-underline-\\d+">
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" id="password" name="password" type="password" value="">
           </div>
-          <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="1"></span>
-          </p>
+          <p class="MuiFormHelperText-root-\\d+"></p>
         </div>
         <div class="MuiFormControl-root-\\d+">
           <div class="MuiInput-root-\\d+ MuiInput-formControl-\\d+ MuiInput-underline-\\d+">
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" name="passwordConfirm" type="password" value="">
           </div>
-          <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="2"></span>
-          </p>
+          <p class="MuiFormHelperText-root-\\d+"></p>
         </div>
       </form>`
     ));
@@ -243,10 +225,8 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+" name="username" type="text" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="0">
-              <span data-feedback="0.4" class="FieldFeedback-root-\\d+ info" style="display: block;">Username 'jimmy' available</span>
-              <span data-feedback="0.2" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="0.4" class="FieldFeedback-root-\\d+ info" style="display: block;">Username 'jimmy' available</span>
+            <span data-feedback="0.2" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -255,12 +235,10 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" id="password" name="password" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="1">
-              <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
-              <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
-              <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
-              <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
+            <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
+            <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
+            <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -268,9 +246,7 @@ describe('FormWithConstraints', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" name="passwordConfirm" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="2">
-              <span data-feedback="2.1" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="2.1" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
       </form>`
@@ -344,10 +320,8 @@ describe('Async', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+" name="username" type="text" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="0">
-              <span data-feedback="0.3" class="FieldFeedback-root-\\d+ info" style="display: block;">Username 'jimmy' available</span>
-              <span data-feedback="0.2" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="0.3" class="FieldFeedback-root-\\d+ info" style="display: block;">Username 'jimmy' available</span>
+            <span data-feedback="0.2" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -356,12 +330,10 @@ describe('Async', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" id="password" name="password" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="1">
-              <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
-              <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
-              <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
-              <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
+            <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
+            <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
+            <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -369,9 +341,7 @@ describe('Async', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" name="passwordConfirm" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="2">
-              <span data-feedback="2.1" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="2.1" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
       </form>`
@@ -434,9 +404,7 @@ describe('Async', () => {
             <input aria-invalid="true" class="MuiInput-input-\\d+" name="username" type="text" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+ MuiFormHelperText-error-\\d+">
-            <span data-feedbacks="0">
-              <span data-feedback="0.3" class="FieldFeedback-root-\\d+ error" style="display: block;">Something wrong with username 'error'</span>
-            </span>
+            <span data-feedback="0.3" class="FieldFeedback-root-\\d+ error" style="display: block;">Something wrong with username 'error'</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -445,12 +413,10 @@ describe('Async', () => {
             <input aria-invalid="false" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" id="password" name="password" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+">
-            <span data-feedbacks="1">
-              <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
-              <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
-              <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
-              <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
-            </span>
+            <span data-feedback="1.3" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain small letters</span>
+            <span data-feedback="1.4" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain capital letters</span>
+            <span data-feedback="1.5" class="FieldFeedback-root-\\d+ warning" style="display: block;">Should contain special characters</span>
+            <span data-feedback="1.6" class="FieldFeedback-root-\\d+ when-valid" style="display: block;">Looks good!</span>
           </p>
         </div>
         <div class="MuiFormControl-root-\\d+">
@@ -458,9 +424,7 @@ describe('Async', () => {
             <input aria-invalid="true" class="MuiInput-input-\\d+ MuiInput-inputType-\\d+" name="passwordConfirm" type="password" value="">
           </div>
           <p class="MuiFormHelperText-root-\\d+ MuiFormHelperText-error-\\d+">
-            <span data-feedbacks="2">
-              <span data-feedback="2.0" class="FieldFeedback-root-\\d+ error" style="display: block;">Not the same password</span>
-            </span>
+            <span data-feedback="2.0" class="FieldFeedback-root-\\d+ error" style="display: block;">Not the same password</span>
           </p>
         </div>
       </form>`

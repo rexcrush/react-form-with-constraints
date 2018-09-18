@@ -1,14 +1,9 @@
-// FIXME
-// See Thoughts about variadic generics? https://github.com/Microsoft/TypeScript/issues/1773
-// See Proposal: Variadic Kinds -- Give specific types to variadic functions https://github.com/Microsoft/TypeScript/issues/5453
-type Args = any[];
+type Listener<Args extends any[], ReturnType> = (...args: Args) => ReturnType | Promise<ReturnType>;
 
-type Listener<ListenerReturnType = void> = (...args: Args) => ListenerReturnType | Promise<ListenerReturnType>;
+export default class EventEmitter<ListenerArgs extends any[] = [], ListenerReturnType = void> {
+  listeners = new Map<string, Listener<ListenerArgs, ListenerReturnType>[]>();
 
-export default class EventEmitter<ListenerReturnType = void> {
-  listeners = new Map<string, Listener<ListenerReturnType>[]>();
-
-  async emit(eventName: string, ...args: Args) {
+  async emit(eventName: string, ...args: ListenerArgs) {
     const listeners = this.listeners.get(eventName)!;
 
     // Assert disabled: an even can be emitted even without listeners
@@ -32,7 +27,7 @@ export default class EventEmitter<ListenerReturnType = void> {
     return ret;
   }
 
-  addListener(eventName: string, listener: Listener<ListenerReturnType>) {
+  addListener(eventName: string, listener: Listener<ListenerArgs, ListenerReturnType>) {
     if (!this.listeners.has(eventName)) this.listeners.set(eventName, []);
     const listeners = this.listeners.get(eventName)!;
     console.assert(listeners.indexOf(listener) === -1, `Listener already added for event '${eventName}'`);
@@ -43,7 +38,7 @@ export default class EventEmitter<ListenerReturnType = void> {
   // "removeListener will remove, at most, one instance of a listener from the listener array.
   // If any single listener has been added multiple times to the listener array for the specified eventName,
   // then removeListener must be called multiple times to remove each instance."
-  removeListener(eventName: string, listener: Listener<ListenerReturnType>) {
+  removeListener(eventName: string, listener: Listener<ListenerArgs, ListenerReturnType>) {
     const listeners = this.listeners.get(eventName)!;
     console.assert(listeners !== undefined, `Unknown event '${eventName}'`);
 

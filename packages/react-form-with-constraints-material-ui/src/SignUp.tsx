@@ -6,10 +6,10 @@ import {
 } from '@material-ui/core';
 
 import {
-  FormWithConstraints, Async, FieldFeedback,
+  FormWithConstraints, FieldFeedbacks, Async, FieldFeedback,
   TextField, FormControl
 } from './index';
-import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
+//import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
 import checkUsernameAvailability from '../../react-form-with-constraints/src/checkUsernameAvailability';
 
 interface SignUpProps {

@@ -3,8 +3,9 @@
   "compilerOptions": {
     "noEmit": false,
     "outDir": "lib",
-    "inlineSourceMap": true,
-    "inlineSources": true,
+    "sourceMap": true,
+    //"inlineSourceMap": true,
+    //"inlineSources": true,
     "declaration": true
   },
   "include": []

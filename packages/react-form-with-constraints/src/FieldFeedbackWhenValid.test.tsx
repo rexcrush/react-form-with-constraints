@@ -4,9 +4,10 @@ import { shallow as _shallow } from 'enzyme';
 import {
   FormWithConstraints, Field,
   FieldWillValidateEvent, FieldDidValidateEvent, FieldDidResetEvent,
+  FieldFeedbacks,
   FieldFeedbackWhenValid, FieldFeedbackWhenValidProps, FieldFeedbackWhenValidContext
 } from './index';
-import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
+//import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
 
 const shallow = (node: React.ReactElement<FieldFeedbackWhenValidProps>, options: {context: FieldFeedbackWhenValidContext}) =>
   _shallow<FieldFeedbackWhenValidProps>(node, options);

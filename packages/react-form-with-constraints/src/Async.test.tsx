@@ -2,13 +2,11 @@ import React from 'react';
 import { shallow as _shallow, mount as _mount } from 'enzyme';
 
 import {
-  FormWithConstraints, FieldFeedbacksProps, Async, AsyncProps, AsyncContext, Status,
+  FormWithConstraints, FieldFeedbacks, FieldFeedbacksProps, Async, AsyncProps, AsyncContext, Status,
   FieldFeedback, FieldFeedbacksContext, ValidateFieldEvent
 } from './index';
 import checkUsernameAvailability from './checkUsernameAvailability';
 import { input_unknown_valueMissing, input_username_valid, input_username_error_valid } from './InputElementMock';
-import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
-import beautifyHtml from './beautifyHtml';
 
 const shallow = (node: React.ReactElement<AsyncProps<any>>, options: {context: AsyncContext}) =>
   _shallow<AsyncProps<any>>(node, options);
@@ -106,11 +104,11 @@ describe('render()', () => {
       </FieldFeedbacks>,
       {context: {form}}
     );
-    expect(wrapper.html()).toEqual('<span data-feedbacks="0"></span>');
+    expect(wrapper.html()).toEqual(null);
 
     const input = {...input_username_valid};
     let fieldsPromise = form.validateFields(input);
-    expect(wrapper.html()).toEqual('<span data-feedbacks="0">Pending...</span>');
+    expect(wrapper.html()).toEqual('Pending...');
 
     let fields = await fieldsPromise;
     expect(fields).toEqual([
@@ -121,15 +119,13 @@ describe('render()', () => {
         ]
       }
     ]);
-    expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
-      <span data-feedbacks="0">
-        <span data-feedback="0.0" class="info" style="display: block;">Username 'jimmy' available</span>
-      </span>`
+    expect(wrapper.html()).toEqual(
+      `<span data-feedback="0.0" class="info" style="display: block;">Username 'jimmy' available</span>`
     );
 
     input.value = 'john';
     fieldsPromise = form.validateFields(input);
-    expect(wrapper.html()).toEqual('<span data-feedbacks="0">Pending...</span>');
+    expect(wrapper.html()).toEqual('Pending...');
 
     fields = await fieldsPromise;
     expect(fields).toEqual([
@@ -140,10 +136,8 @@ describe('render()', () => {
         ]
       }
     ]);
-    expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
-      <span data-feedbacks="0">
-        <span data-feedback="0.1" class="error" style="display: block;">Username 'john' already taken, choose another</span>
-      </span>`
+    expect(wrapper.html()).toEqual(
+      `<span data-feedback="0.1" class="error" style="display: block;">Username 'john' already taken, choose another</span>`
     );
   });
 
@@ -163,10 +157,10 @@ describe('render()', () => {
       </FieldFeedbacks>,
       {context: {form}}
     );
-    expect(wrapper.html()).toEqual('<span data-feedbacks="0"></span>');
+    expect(wrapper.html()).toEqual(null);
 
     const fieldsPromise = form.validateFields(input_username_error_valid);
-    expect(wrapper.html()).toEqual('<span data-feedbacks="0">Pending...</span>');
+    expect(wrapper.html()).toEqual('Pending...');
 
     const fields = await fieldsPromise;
     expect(fields).toEqual([
@@ -177,10 +171,8 @@ describe('render()', () => {
         ]
       }
     ]);
-    expect(beautifyHtml(wrapper.html(), '      ')).toEqual(`\
-      <span data-feedbacks="0">
-        <span data-feedback="0.0" class="error" style="display: block;">Something wrong with username 'error'</span>
-      </span>`
+    expect(wrapper.html()).toEqual(
+      `<span data-feedback="0.0" class="error" style="display: block;">Something wrong with username 'error'</span>`
     );
   });
 
@@ -199,15 +191,15 @@ describe('render()', () => {
       </FieldFeedbacks>,
       {context: {form}}
     );
-    expect(wrapper.html()).toEqual('<span data-feedbacks="0"></span>');
+    expect(wrapper.html()).toEqual(null);
 
     const fieldsPromise = form.validateFields(input_username_error_valid);
-    expect(wrapper.html()).toEqual('<span data-feedbacks="0">Pending...</span>');
+    expect(wrapper.html()).toEqual('Pending...');
 
     const fields = await fieldsPromise;
     expect(fields).toEqual([
       {name: 'username', validations: []}
     ]);
-    expect(wrapper.html()).toEqual('<span data-feedbacks="0"></span>');
+    expect(wrapper.html()).toEqual(null);
   });
 });

@@ -38,7 +38,7 @@
   },
 
   "devDependencies": {
-    "typescript": "^2.9.2",
+    "typescript": "next",
 
     "react": "16.0.0",
     "@types/react": "latest",

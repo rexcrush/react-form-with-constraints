@@ -9,6 +9,7 @@ import flattenDeep from './flattenDeep';
 import Nullable from './Nullable';
 
 export interface FieldFeedbacksProps {
+  // FIXME Remove ? when @types/react is updated, see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html#support-for-defaultprops-in-jsx
   for?: string;
 
   /**
@@ -16,7 +17,7 @@ export interface FieldFeedbacksProps {
    * no => shows everything
    * Default is 'first-error'
    */
-  stop?: 'first' | 'first-error' | 'first-warning' | 'first-info' | 'no';
+  stop: 'first' | 'first-error' | 'first-warning' | 'first-info' | 'no';
 }
 
 // Why Nullable? See https://github.com/DefinitelyTyped/DefinitelyTyped/pull/27973

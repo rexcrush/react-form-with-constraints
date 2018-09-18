@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { FormWithConstraints, FieldFeedback, Async } from './index';
-import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
+import { FormWithConstraints, FieldFeedbacks, Async, FieldFeedback } from './index';
+//import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
 import checkUsernameAvailability from './checkUsernameAvailability';
 
 interface SignUpProps {

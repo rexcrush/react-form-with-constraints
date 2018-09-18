@@ -1,9 +1,9 @@
 import React from 'react';
 import { shallow as _shallow, mount as _mount } from 'enzyme';
 
-import { FormWithConstraints, Field, FieldFeedback, FieldFeedbackContext, FieldFeedbackProps, ValidateFieldEvent } from './index';
+import { FormWithConstraints, Field, FieldFeedbacks, FieldFeedback, FieldFeedbackContext, FieldFeedbackProps, ValidateFieldEvent } from './index';
 import { InputElementMock, input_username_valueMissing, input_username_valid } from './InputElementMock';
-import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
+//import FieldFeedbacks from './FieldFeedbacksEnzymeFix';
 
 const shallow = (node: React.ReactElement<FieldFeedbackProps>, options: {context: FieldFeedbackContext}) =>
   _shallow<FieldFeedbackProps>(node, options);

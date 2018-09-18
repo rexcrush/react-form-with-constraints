@@ -7,6 +7,7 @@ import { Async, AsyncChildContext } from './Async';
 import { InputElement } from './InputElement';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import { FieldFeedbackWhenValid } from './FieldFeedbackWhenValid';
+import Nullable from './Nullable';
 import FieldFeedbackType from './FieldFeedbackType';
 import Field from './Field';
 import Nullable from './Nullable';
@@ -27,17 +28,19 @@ type WhenFn = (value: string) => boolean;
 type When = WhenString | WhenFn;
 
 export interface FieldFeedbackClasses {
-  classes?: {
+  classes?: { // FIXME Remove ? when @types/react is updated, see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html#support-for-defaultprops-in-jsx
     [index: string]: string | undefined;
-    error?: string;
-    warning?: string;
-    info?: string;
-    whenValid?: string;
+    error: string;
+    warning: string;
+    info: string;
+    whenValid: string;
   };
 }
 
 export interface FieldFeedbackBaseProps {
+  // FIXME Remove ? when @types/react is updated, see https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html#support-for-defaultprops-in-jsx
   when?: When;
+
   error?: boolean;
   warning?: boolean;
   info?: boolean;
@@ -59,7 +62,8 @@ interface FieldFeedbackState {
 export type FieldFeedbackContext = FormWithConstraintsChildContext & FieldFeedbacksChildContext & Partial<Nullable<AsyncChildContext>>;
 
 export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackProps> extends React.Component<Props, FieldFeedbackState> {
-  static defaultProps: FieldFeedbackProps = {
+  // FIXME See Regression with >= v3 and React, generics, defaultProps https://github.com/Microsoft/TypeScript/issues/26395
+  /*static defaultProps = {
     when: () => true,
     classes: {
       error: 'error',
@@ -67,7 +71,7 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
       info: 'info',
       whenValid: 'when-valid'
     }
-  };
+  };*/
 
   static contextTypes: React.ValidationMap<FieldFeedbackContext> = {
     form: PropTypes.instanceOf(FormWithConstraints).isRequired,
@@ -125,7 +129,7 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
   }
 
   validate = (input: InputElement) => {
-    const { when } = this.props;
+    const { when } = this.props as Props;
     const { form, fieldFeedbacks } = this.context;
 
     const field = form.fieldsStore.getField(input.name)!;
@@ -201,7 +205,7 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
 
   // Don't forget to update native/FieldFeedback.render()
   render() {
-    const { when, error, warning, info, className, classes, style, children, ...otherProps } = this.props as FieldFeedbackProps;
+    const { when, error, warning, info, className, classes, style, children, ...otherProps } = this.props as any as FieldFeedbackProps;
     const { validation, validationMessage } = this.state;
 
     const fieldFeedbackClassName = classes![validation.type]!;
@@ -222,3 +226,14 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
     return null;
   }
 }
+
+// FIXME See Regression with >= v3 and React, generics, defaultProps https://github.com/Microsoft/TypeScript/issues/26395
+(FieldFeedback as React.ComponentClass).defaultProps = {
+  when: () => true,
+  classes: {
+    error: 'error',
+    warning: 'warning',
+    info: 'info',
+    whenValid: 'when-valid'
+  }
+};

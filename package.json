@@ -14,9 +14,9 @@
     "dist": "lerna run dist",
     "prepublishOnly": "lerna run prepublishOnly",
 
-    "test": "lerna run test --stream",
-    "test:e2e": "lerna run test:e2e --stream --concurrency 1",
-    "test:coverage": "lerna run test:coverage --stream",
+    "test": "lerna run test",
+    "test:e2e": "lerna run test:e2e --concurrency 1",
+    "test:coverage": "lerna run test:coverage",
 
     "tslint": "find . -name 'tsconfig.json' -not -path '*/node_modules/*' -print -exec tslint --config tslint.json --project '{}' \\;",
 
@@ -41,7 +41,7 @@
   "devDependencies": {
     "lerna": "latest",
 
-    "typescript": "^2.9.2",
+    "typescript": "next",
 
     "tslint": "latest",
     "tslint-react": "latest"
