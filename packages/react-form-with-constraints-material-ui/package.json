@@ -49,7 +49,7 @@
   "devDependencies": {
     "typescript": "latest",
 
-    "react": "latest",
+    "react": "next",
     "@types/react": "latest",
 
     "react-form-with-constraints": "^0.11.0",
@@ -64,7 +64,7 @@
     "@types/enzyme": "latest",
     "enzyme-adapter-react-16": "latest",
     "@types/enzyme-adapter-react-16": "latest",
-    "react-dom": "latest",
+    "react-dom": "next",
 
     "node-zopfli": "latest",
     "node-gyp": "latest",

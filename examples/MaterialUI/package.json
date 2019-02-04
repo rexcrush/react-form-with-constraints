@@ -26,8 +26,8 @@
   "dependencies": {
     "react-scripts": "latest",
 
-    "react": "latest",
-    "react-dom": "latest",
+    "react": "next",
+    "react-dom": "next",
 
     "lodash": "latest",
 

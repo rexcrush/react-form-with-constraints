@@ -47,9 +47,9 @@
   "devDependencies": {
     "typescript": "latest",
 
-    "react": "latest",
+    "react": "next",
     "@types/react": "latest",
-    "react-dom": "latest",
+    "react-dom": "next",
     "@types/react-dom": "latest",
 
     "react-form-with-constraints": "^0.11.0",
