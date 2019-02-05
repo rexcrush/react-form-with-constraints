@@ -1,8 +1,7 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 
-import { FormWithConstraints, FormWithConstraintsChildContext } from './FormWithConstraints';
-import { FieldFeedbacks, FieldFeedbacksChildContext } from './FieldFeedbacks';
+import { FormWithConstraints, FormWithConstraintsContext } from './FormWithConstraints';
+import { FieldFeedbacksPrivate, FieldFeedbacksContext } from './FieldFeedbacks';
 import { withValidateFieldEventEmitter } from './withValidateFieldEventEmitter';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import { InputElement } from './InputElement';
@@ -21,61 +20,59 @@ export interface AsyncProps<T> {
   catch?: (reason: any) => React.ReactNode;
 }
 
+export const AsyncContext = React.createContext<AsyncPrivate<any> | undefined>(undefined);
+
+export const Async: React.FunctionComponent<AsyncProps<any>> = props =>
+  <FormWithConstraintsContext.Consumer>
+    {form =>
+      <FieldFeedbacksContext.Consumer>
+        {fieldFeedbacks => <AsyncPrivate {...props} form={form!} fieldFeedbacks={fieldFeedbacks!} />}
+      </FieldFeedbacksContext.Consumer>
+    }
+  </FormWithConstraintsContext.Consumer>;
+
+
+interface AsyncPrivateContext {
+  form: FormWithConstraints;
+  fieldFeedbacks: FieldFeedbacksPrivate;
+}
+
+type AsyncPrivateProps<T> = AsyncProps<T> & AsyncPrivateContext;
+
 interface AsyncState<T> {
   status: Status;
   value?: T;
 }
-
-export interface AsyncChildContext {
-  async: Async<any>;
-}
-
-export type AsyncContext = FormWithConstraintsChildContext & FieldFeedbacksChildContext;
 
 // See Asynchronous form errors and messages in AngularJS https://jaysoo.ca/2014/10/14/async-form-errors-and-messages-in-angularjs/
 // See Support for asynchronous values (like Promises and Observables) https://github.com/facebook/react/issues/6481
 // See https://github.com/capaj/react-promise
 // See How to render promises in React https://gist.github.com/hex13/6d46f8b54631871ea8bf87576b635c49
 // Cannot be inside a separated npm package since FieldFeedback needs to attach itself to Async
-class AsyncComponent<T = any> extends React.Component<AsyncProps<T>, AsyncState<T>> {}
-export class Async<T> extends
+class AsyncPrivateComponent<T = any> extends React.Component<AsyncPrivateProps<T>, AsyncState<T>> {}
+export class AsyncPrivate<T> extends
                         withValidateFieldEventEmitter<
                           // FieldFeedback returns FieldFeedbackValidation
                           FieldFeedbackValidation,
-                          typeof AsyncComponent
+                          typeof AsyncPrivateComponent
                         >(
-                          AsyncComponent
-                        )
-                      implements React.ChildContextProvider<AsyncChildContext> {
-  static contextTypes: React.ValidationMap<AsyncContext> = {
-    form: PropTypes.instanceOf(FormWithConstraints).isRequired,
-    fieldFeedbacks: PropTypes.instanceOf(FieldFeedbacks).isRequired
-  };
-  context!: AsyncContext;
-
-  static childContextTypes: React.ValidationMap<AsyncChildContext> = {
-    async: PropTypes.instanceOf(Async).isRequired
-  };
-  getChildContext(): AsyncChildContext {
-    return {
-      async: this
-    };
-  }
+                          AsyncPrivateComponent
+                        ) {
 
   state: AsyncState<T> = {
     status: Status.None
   };
 
   componentWillMount() {
-    this.context.fieldFeedbacks.addValidateFieldEventListener(this.validate);
+    this.props.fieldFeedbacks.addValidateFieldEventListener(this.validate);
   }
 
   componentWillUnmount() {
-    this.context.fieldFeedbacks.removeValidateFieldEventListener(this.validate);
+    this.props.fieldFeedbacks.removeValidateFieldEventListener(this.validate);
   }
 
   validate = (input: InputElement) => {
-    const { form, fieldFeedbacks } = this.context;
+    const { form, fieldFeedbacks } = this.props;
 
     let validations;
 
@@ -125,6 +122,10 @@ export class Async<T> extends
         break;
     }
 
-    return element;
+    return (
+      <AsyncContext.Provider value={this}>
+        {element}
+      </AsyncContext.Provider>
+    );
   }
 }

@@ -1,15 +1,13 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 
-import { FormWithConstraints, FormWithConstraintsChildContext } from './FormWithConstraints';
-import { FieldFeedbacks, FieldFeedbacksChildContext } from './FieldFeedbacks';
-import { Async, AsyncChildContext } from './Async';
+import { FormWithConstraints, FormWithConstraintsContext } from './FormWithConstraints';
+import { FieldFeedbacksContext, FieldFeedbacksPrivate } from './FieldFeedbacks';
+import { AsyncContext, AsyncPrivate } from './Async';
 import { InputElement } from './InputElement';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import { FieldFeedbackWhenValid } from './FieldFeedbackWhenValid';
 import FieldFeedbackType from './FieldFeedbackType';
 import Field from './Field';
-import Nullable from './Nullable';
 
 type WhenString =
   | 'valid'
@@ -46,19 +44,7 @@ export interface FieldFeedbackBaseProps {
 export interface FieldFeedbackProps extends FieldFeedbackBaseProps, FieldFeedbackClasses, React.HTMLAttributes<HTMLSpanElement> {
 }
 
-interface FieldFeedbackState {
-  validation: FieldFeedbackValidation;
-
-  // Copy of input.validationMessage
-  // See https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement
-  // See https://www.w3.org/TR/html51/sec-forms.html#the-constraint-validation-api
-  validationMessage: string;
-}
-
-// Why Nullable? See https://github.com/DefinitelyTyped/DefinitelyTyped/pull/27973
-export type FieldFeedbackContext = FormWithConstraintsChildContext & FieldFeedbacksChildContext & Partial<Nullable<AsyncChildContext>>;
-
-export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackProps> extends React.Component<Props, FieldFeedbackState> {
+export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackProps> extends React.Component<Props> {
   static defaultProps: FieldFeedbackProps = {
     when: () => true,
     classes: {
@@ -69,20 +55,48 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
     }
   };
 
-  static contextTypes: React.ValidationMap<FieldFeedbackContext> = {
-    form: PropTypes.instanceOf(FormWithConstraints).isRequired,
-    fieldFeedbacks: PropTypes.instanceOf(FieldFeedbacks).isRequired,
-    async: PropTypes.instanceOf(Async)
-  };
-  context!: FieldFeedbackContext;
+  render() {
+    return (
+      <FormWithConstraintsContext.Consumer>
+        {form =>
+          <FieldFeedbacksContext.Consumer>
+            {fieldFeedbacks =>
+              <AsyncContext.Consumer>
+                {async => <FieldFeedbackPrivate {...this.props} form={form!} fieldFeedbacks={fieldFeedbacks!} async={async} />}
+              </AsyncContext.Consumer>
+            }
+          </FieldFeedbacksContext.Consumer>
+        }
+      </FormWithConstraintsContext.Consumer>
+    );
+  }
+}
 
+interface FieldFeedbackPrivateContext {
+  form: FormWithConstraints;
+  fieldFeedbacks: FieldFeedbacksPrivate;
+  async?: AsyncPrivate<any>;
+}
+
+type FieldFeedbackPrivateProps = FieldFeedbackProps & FieldFeedbackPrivateContext;
+
+interface FieldFeedbackState {
+  validation: FieldFeedbackValidation;
+
+  // Copy of input.validationMessage
+  // See https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement
+  // See https://www.w3.org/TR/html51/sec-forms.html#the-constraint-validation-api
+  validationMessage: string;
+}
+
+export class FieldFeedbackPrivate extends React.Component<FieldFeedbackPrivateProps, FieldFeedbackState> {
   // Tested: there is no conflict with React key prop (https://reactjs.org/docs/lists-and-keys.html)
   readonly key: string; // '0.1', '1.0', '3.5'...
 
-  constructor(props: Props, context: FieldFeedbackContext) {
-    super(props, context);
+  constructor(props: FieldFeedbackPrivateProps) {
+    super(props);
 
-    this.key = context.fieldFeedbacks.addFieldFeedback();
+    this.key = props.fieldFeedbacks.addFieldFeedback();
 
     const { error, warning, info, when } = props;
 
@@ -107,7 +121,7 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
   }
 
   componentWillMount() {
-    const { form, fieldFeedbacks, async } = this.context;
+    const { form, fieldFeedbacks, async } = this.props;
 
     if (async) async.addValidateFieldEventListener(this.validate);
     else fieldFeedbacks.addValidateFieldEventListener(this.validate);
@@ -116,7 +130,7 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
   }
 
   componentWillUnmount() {
-    const { form, fieldFeedbacks, async } = this.context;
+    const { form, fieldFeedbacks, async } = this.props;
 
     if (async) async.removeValidateFieldEventListener(this.validate);
     else fieldFeedbacks.removeValidateFieldEventListener(this.validate);
@@ -125,8 +139,7 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
   }
 
   validate = (input: InputElement) => {
-    const { when } = this.props;
-    const { form, fieldFeedbacks } = this.context;
+    const { form, fieldFeedbacks, when } = this.props;
 
     const field = form.fieldsStore.getField(input.name)!;
 
@@ -191,7 +204,7 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
   }
 
   fieldDidReset = (field: Field) => {
-    if (field.name === this.context.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
+    if (field.name === this.props.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
       this.setState(prevState => ({
         validation: {...prevState.validation, ...{show: undefined}},
         validationMessage: ''
@@ -201,7 +214,7 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
 
   // Don't forget to update native/FieldFeedback.render()
   render() {
-    const { when, error, warning, info, className, classes, style, children, ...otherProps } = this.props as unknown as FieldFeedbackProps;
+    const { form, fieldFeedbacks, async, when, error, warning, info, className, classes, style, children, ...otherProps } = this.props;
     const { validation, validationMessage } = this.state;
 
     const fieldFeedbackClassName = classes![validation.type]!;
@@ -209,7 +222,15 @@ export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackP
 
     // Special case for when="valid": always displayed, then FieldFeedbackWhenValid decides what to do
     if (validation.type === FieldFeedbackType.WhenValid) {
-      return <FieldFeedbackWhenValid data-feedback={this.key} style={style} className={classNames} {...otherProps}>{children}</FieldFeedbackWhenValid>;
+      return (
+        <FieldFeedbackWhenValid
+          form={form} fieldFeedbacks={fieldFeedbacks}
+          data-feedback={this.key} style={style} className={classNames}
+          {...otherProps}
+        >
+          {children}
+        </FieldFeedbackWhenValid>
+      );
     }
 
     if (validation.show) {

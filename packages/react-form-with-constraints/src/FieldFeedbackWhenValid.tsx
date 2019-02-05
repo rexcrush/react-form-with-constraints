@@ -1,37 +1,32 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 
-import { FormWithConstraints, FormWithConstraintsChildContext } from './FormWithConstraints';
-import { FieldFeedbacks, FieldFeedbacksChildContext } from './FieldFeedbacks';
+import { FormWithConstraints } from './FormWithConstraints';
+import { FieldFeedbacksPrivate } from './FieldFeedbacks';
 import { FieldFeedbackClasses } from './FieldFeedback';
 import Field from './Field';
 
-export interface FieldFeedbackWhenValidBaseProps {
+interface FieldFeedbackWhenValidPrivateContext {
+  form: FormWithConstraints;
+  fieldFeedbacks: FieldFeedbacksPrivate;
 }
 
-export interface FieldFeedbackWhenValidProps extends FieldFeedbackWhenValidBaseProps, FieldFeedbackClasses, React.HTMLAttributes<HTMLSpanElement> {
-}
+type FieldFeedbackWhenValidBaseProps = FieldFeedbackWhenValidPrivateContext;
+
+export type FieldFeedbackWhenValidProps = FieldFeedbackWhenValidBaseProps & FieldFeedbackClasses & React.HTMLAttributes<HTMLSpanElement>;
 
 interface FieldFeedbackWhenValidState {
   fieldIsValid: boolean | undefined;
 }
 
-export type FieldFeedbackWhenValidContext = FormWithConstraintsChildContext & FieldFeedbacksChildContext;
-
 export class FieldFeedbackWhenValid<Props extends FieldFeedbackWhenValidBaseProps = FieldFeedbackWhenValidProps>
        extends React.Component<Props, FieldFeedbackWhenValidState> {
-  static contextTypes: React.ValidationMap<FieldFeedbackWhenValidContext> = {
-    form: PropTypes.instanceOf(FormWithConstraints).isRequired,
-    fieldFeedbacks: PropTypes.instanceOf(FieldFeedbacks).isRequired
-  };
-  context!: FieldFeedbackWhenValidContext;
 
   state: FieldFeedbackWhenValidState = {
     fieldIsValid: undefined
   };
 
   componentWillMount() {
-    const { form } = this.context;
+    const { form } = this.props;
 
     form.addFieldWillValidateEventListener(this.fieldWillValidate);
     form.addFieldDidValidateEventListener(this.fieldDidValidate);
@@ -39,7 +34,7 @@ export class FieldFeedbackWhenValid<Props extends FieldFeedbackWhenValidBaseProp
   }
 
   componentWillUnmount() {
-    const { form } = this.context;
+    const { form } = this.props;
 
     form.removeFieldWillValidateEventListener(this.fieldWillValidate);
     form.removeFieldDidValidateEventListener(this.fieldDidValidate);
@@ -47,26 +42,26 @@ export class FieldFeedbackWhenValid<Props extends FieldFeedbackWhenValidBaseProp
   }
 
   fieldWillValidate = (fieldName: string) => {
-    if (fieldName === this.context.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
+    if (fieldName === this.props.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
       this.setState({fieldIsValid: undefined});
     }
   }
 
   fieldDidValidate = (field: Field) => {
-    if (field.name === this.context.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
+    if (field.name === this.props.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
       this.setState({fieldIsValid: field.isValid()});
     }
   }
 
   fieldDidReset = (field: Field) => {
-    if (field.name === this.context.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
+    if (field.name === this.props.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
       this.setState({fieldIsValid: undefined});
     }
   }
 
   // Don't forget to update native/FieldFeedbackWhenValid.render()
   render() {
-    const { style, ...otherProps } = this.props as unknown as FieldFeedbackWhenValidProps;
+    const { form, fieldFeedbacks, style, ...otherProps } = this.props as FieldFeedbackWhenValidProps;
 
     return this.state.fieldIsValid ?
       // <span style="display: block"> instead of <div> so FieldFeedbackWhenValid can be wrapped inside a <p>
