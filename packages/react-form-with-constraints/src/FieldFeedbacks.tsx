@@ -46,16 +46,17 @@ interface FieldFeedbacksPrivateContext {
 type FieldFeedbacksPrivateProps = FieldFeedbacksProps & FieldFeedbacksPrivateContext;
 
 class FieldFeedbacksPrivateComponent extends React.Component<FieldFeedbacksPrivateProps> {}
-export class FieldFeedbacksPrivate extends
-                              withValidateFieldEventEmitter<
-                                // FieldFeedback returns FieldFeedbackValidation
-                                // Async returns FieldFeedbackValidation[] | undefined
-                                // FieldFeedbacks returns (FieldFeedbackValidation | undefined)[]
-                                FieldFeedbackValidation | (FieldFeedbackValidation | undefined)[] | undefined,
-                                typeof FieldFeedbacksPrivateComponent
-                              >(
-                                FieldFeedbacksPrivateComponent
-                              ) {
+export class FieldFeedbacksPrivate
+  extends
+    withValidateFieldEventEmitter<
+      // FieldFeedback returns FieldFeedbackValidation
+      // Async returns FieldFeedbackValidation[] | undefined
+      // FieldFeedbacks returns (FieldFeedbackValidation | undefined)[]
+      FieldFeedbackValidation | (FieldFeedbackValidation | undefined)[] | undefined,
+      typeof FieldFeedbacksPrivateComponent
+    >(
+      FieldFeedbacksPrivateComponent
+    ) {
 
   // Tested: there is no conflict with React key prop (https://reactjs.org/docs/lists-and-keys.html)
   readonly key: string; // '0', '1', '2'...

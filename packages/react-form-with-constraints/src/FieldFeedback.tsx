@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { FormWithConstraints, FormWithConstraintsContext } from './FormWithConstraints';
-import { FieldFeedbacksContext, FieldFeedbacksPrivate } from './FieldFeedbacks';
-import { AsyncContext, AsyncPrivate } from './Async';
+import { FormWithConstraintsContext } from './FormWithConstraints';
+import { FieldFeedbacksContext } from './FieldFeedbacks';
+import { AsyncContext } from './Async';
 import { InputElement } from './InputElement';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import { FieldFeedbackWhenValid } from './FieldFeedbackWhenValid';
@@ -41,109 +41,58 @@ export interface FieldFeedbackBaseProps {
   info?: boolean;
 }
 
-export interface FieldFeedbackProps extends FieldFeedbackBaseProps, FieldFeedbackClasses, React.HTMLAttributes<HTMLSpanElement> {
-}
+export type FieldFeedbackProps = FieldFeedbackBaseProps & FieldFeedbackClasses & React.HTMLAttributes<HTMLSpanElement>;
 
-export class FieldFeedback<Props extends FieldFeedbackBaseProps = FieldFeedbackProps> extends React.Component<Props> {
-  static defaultProps: FieldFeedbackProps = {
-    when: () => true,
-    classes: {
-      error: 'error',
-      warning: 'warning',
-      info: 'info',
-      whenValid: 'when-valid'
-    }
-  };
+export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props => {
+  const form = React.useContext(FormWithConstraintsContext)!;
+  const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
+  const async = React.useContext(AsyncContext)!;
 
-  render() {
-    return (
-      <FormWithConstraintsContext.Consumer>
-        {form =>
-          <FieldFeedbacksContext.Consumer>
-            {fieldFeedbacks =>
-              <AsyncContext.Consumer>
-                {async => <FieldFeedbackPrivate {...this.props} form={form!} fieldFeedbacks={fieldFeedbacks!} async={async} />}
-              </AsyncContext.Consumer>
-            }
-          </FieldFeedbacksContext.Consumer>
-        }
-      </FormWithConstraintsContext.Consumer>
-    );
+  // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
+  const keyRef = React.useRef(fieldFeedbacks.addFieldFeedback());
+
+  const {
+    when, error, warning, info,
+    className, classes, style, children, ...otherProps
+  } = props;
+
+  let type = FieldFeedbackType.Error; // Default is error
+  if (when === 'valid') type = FieldFeedbackType.WhenValid;
+  else if (warning) type = FieldFeedbackType.Warning;
+  else if (info) type = FieldFeedbackType.Info;
+
+  // Special case for when="valid"
+  if (type === FieldFeedbackType.WhenValid && (error || warning || info)) {
+    throw new Error('Cannot have an attribute (error, warning...) with FieldFeedback when="valid"');
   }
-}
 
-interface FieldFeedbackPrivateContext {
-  form: FormWithConstraints;
-  fieldFeedbacks: FieldFeedbacksPrivate;
-  async?: AsyncPrivate<any>;
-}
-
-type FieldFeedbackPrivateProps = FieldFeedbackProps & FieldFeedbackPrivateContext;
-
-interface FieldFeedbackState {
-  validation: FieldFeedbackValidation;
+  const [validation, setValidation] = React.useState<FieldFeedbackValidation>({
+    key: keyRef.current,
+    type,
+    show: undefined // undefined means the FieldFeedback was not checked
+  });
 
   // Copy of input.validationMessage
   // See https://developer.mozilla.org/en/docs/Web/API/HTMLInputElement
   // See https://www.w3.org/TR/html51/sec-forms.html#the-constraint-validation-api
-  validationMessage: string;
-}
+  const [validationMessage, setValidationMessage] = React.useState('');
 
-export class FieldFeedbackPrivate extends React.Component<FieldFeedbackPrivateProps, FieldFeedbackState> {
-  // Tested: there is no conflict with React key prop (https://reactjs.org/docs/lists-and-keys.html)
-  readonly key: string; // '0.1', '1.0', '3.5'...
+  React.useEffect(() => {
+    if (async) async.addValidateFieldEventListener(validate);
+    else fieldFeedbacks.addValidateFieldEventListener(validate);
 
-  constructor(props: FieldFeedbackPrivateProps) {
-    super(props);
+    form.addFieldDidResetEventListener(fieldDidReset);
 
-    this.key = props.fieldFeedbacks.addFieldFeedback();
+    return function cleanup() {
+      if (async) async.removeValidateFieldEventListener(validate);
+      else fieldFeedbacks.removeValidateFieldEventListener(validate);
 
-    const { error, warning, info, when } = props;
-
-    let type = FieldFeedbackType.Error; // Default is error
-    if (when === 'valid') type = FieldFeedbackType.WhenValid;
-    else if (warning) type = FieldFeedbackType.Warning;
-    else if (info) type = FieldFeedbackType.Info;
-
-    // Special case for when="valid"
-    if (type === FieldFeedbackType.WhenValid && (error || warning || info)) {
-      throw new Error('Cannot have an attribute (error, warning...) with FieldFeedback when="valid"');
-    }
-
-    this.state = {
-      validation: {
-        key: this.key,
-        type,
-        show: undefined // undefined means the FieldFeedback was not checked
-      },
-      validationMessage: ''
+      form.removeFieldDidResetEventListener(fieldDidReset);
     };
-  }
+  });
 
-  componentWillMount() {
-    const { form, fieldFeedbacks, async } = this.props;
-
-    if (async) async.addValidateFieldEventListener(this.validate);
-    else fieldFeedbacks.addValidateFieldEventListener(this.validate);
-
-    form.addFieldDidResetEventListener(this.fieldDidReset);
-  }
-
-  componentWillUnmount() {
-    const { form, fieldFeedbacks, async } = this.props;
-
-    if (async) async.removeValidateFieldEventListener(this.validate);
-    else fieldFeedbacks.removeValidateFieldEventListener(this.validate);
-
-    form.removeFieldDidResetEventListener(this.fieldDidReset);
-  }
-
-  validate = (input: InputElement) => {
-    const { form, fieldFeedbacks, when } = this.props;
-
+  function validate(input: InputElement) {
     const field = form.fieldsStore.getField(input.name)!;
-
-    const validation = {...this.state.validation}; // Copy state so we don't modify it directly (use of setState() instead)
 
     if (fieldFeedbacks.props.stop === 'first' && field.hasFeedbacks(fieldFeedbacks.key) ||
         fieldFeedbacks.props.stop === 'first-error' && field.hasErrors(fieldFeedbacks.key) ||
@@ -195,28 +144,21 @@ export class FieldFeedbackPrivate extends React.Component<FieldFeedbackPrivatePr
 
     field.addOrReplaceValidation(validation);
 
-    this.setState({
-      validation,
-      validationMessage: input.validationMessage
-    });
+    setValidation(validation);
+    setValidationMessage(input.validationMessage);
 
     return validation;
   }
 
-  fieldDidReset = (field: Field) => {
-    if (field.name === this.props.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
-      this.setState(prevState => ({
-        validation: {...prevState.validation, ...{show: undefined}},
-        validationMessage: ''
-      }));
+  function fieldDidReset(field: Field) {
+    if (field.name === fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
+      setValidation({...validation, ...{show: undefined}});
+      setValidationMessage('');
     }
   }
 
-  // Don't forget to update native/FieldFeedback.render()
-  render() {
-    const { form, fieldFeedbacks, async, when, error, warning, info, className, classes, style, children, ...otherProps } = this.props;
-    const { validation, validationMessage } = this.state;
-
+  function render() {
+    // Don't forget to update native/FieldFeedback.render()
     const fieldFeedbackClassName = classes![validation.type]!;
     const classNames = className !== undefined ? `${className} ${fieldFeedbackClassName}` : fieldFeedbackClassName;
 
@@ -224,8 +166,9 @@ export class FieldFeedbackPrivate extends React.Component<FieldFeedbackPrivatePr
     if (validation.type === FieldFeedbackType.WhenValid) {
       return (
         <FieldFeedbackWhenValid
-          form={form} fieldFeedbacks={fieldFeedbacks}
-          data-feedback={this.key} style={style} className={classNames}
+          data-feedback={keyRef.current}
+          style={style}
+          className={classNames}
           {...otherProps}
         >
           {children}
@@ -237,9 +180,30 @@ export class FieldFeedbackPrivate extends React.Component<FieldFeedbackPrivatePr
       const feedback = children !== undefined ? children : validationMessage;
 
       // <span style="display: block"> instead of <div> so FieldFeedback can be wrapped inside a <p>
-      return <span data-feedback={this.key} className={classNames} style={{display: 'block', ...style}} {...otherProps}>{feedback}</span>;
+      return (
+        <span
+          data-feedback={keyRef.current}
+          className={classNames}
+          style={{display: 'block', ...style}}
+          {...otherProps}
+        >
+          {feedback}
+        </span>
+      );
     }
 
     return null;
   }
-}
+
+  return render();
+};
+
+FieldFeedback.defaultProps = {
+  when: () => true,
+  classes: {
+    error: 'error',
+    warning: 'warning',
+    info: 'info',
+    whenValid: 'when-valid'
+  }
+};

@@ -1,72 +1,58 @@
 import * as React from 'react';
 
-import { FormWithConstraints } from './FormWithConstraints';
-import { FieldFeedbacksPrivate } from './FieldFeedbacks';
+import { FormWithConstraintsContext } from './FormWithConstraints';
+import { FieldFeedbacksContext } from './FieldFeedbacks';
 import { FieldFeedbackClasses } from './FieldFeedback';
 import Field from './Field';
 
-interface FieldFeedbackWhenValidPrivateContext {
-  form: FormWithConstraints;
-  fieldFeedbacks: FieldFeedbacksPrivate;
-}
+export type FieldFeedbackWhenValidProps = FieldFeedbackClasses & React.HTMLAttributes<HTMLSpanElement>;
 
-type FieldFeedbackWhenValidBaseProps = FieldFeedbackWhenValidPrivateContext;
+export const FieldFeedbackWhenValid: React.FunctionComponent<FieldFeedbackWhenValidProps> = props => {
+  const form = React.useContext(FormWithConstraintsContext)!;
+  const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
 
-export type FieldFeedbackWhenValidProps = FieldFeedbackWhenValidBaseProps & FieldFeedbackClasses & React.HTMLAttributes<HTMLSpanElement>;
+  const [fieldIsValid, setFieldIsValid] = React.useState<boolean | undefined>(undefined);
 
-interface FieldFeedbackWhenValidState {
-  fieldIsValid: boolean | undefined;
-}
-
-export class FieldFeedbackWhenValid<Props extends FieldFeedbackWhenValidBaseProps = FieldFeedbackWhenValidProps>
-       extends React.Component<Props, FieldFeedbackWhenValidState> {
-
-  state: FieldFeedbackWhenValidState = {
-    fieldIsValid: undefined
-  };
-
-  componentWillMount() {
-    const { form } = this.props;
-
-    form.addFieldWillValidateEventListener(this.fieldWillValidate);
-    form.addFieldDidValidateEventListener(this.fieldDidValidate);
-    form.addFieldDidResetEventListener(this.fieldDidReset);
-  }
-
-  componentWillUnmount() {
-    const { form } = this.props;
-
-    form.removeFieldWillValidateEventListener(this.fieldWillValidate);
-    form.removeFieldDidValidateEventListener(this.fieldDidValidate);
-    form.removeFieldDidResetEventListener(this.fieldDidReset);
-  }
-
-  fieldWillValidate = (fieldName: string) => {
-    if (fieldName === this.props.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
-      this.setState({fieldIsValid: undefined});
+  function fieldWillValidate(fieldName: string) {
+    if (fieldName === fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
+      setFieldIsValid(undefined);
     }
   }
 
-  fieldDidValidate = (field: Field) => {
-    if (field.name === this.props.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
-      this.setState({fieldIsValid: field.isValid()});
+  function fieldDidValidate(field: Field) {
+    if (field.name === fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
+      setFieldIsValid(field.isValid());
     }
   }
 
-  fieldDidReset = (field: Field) => {
-    if (field.name === this.props.fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
-      this.setState({fieldIsValid: undefined});
+  function fieldDidReset(field: Field) {
+    if (field.name === fieldFeedbacks.fieldName) { // Ignore the event if it's not for us
+      setFieldIsValid(undefined);
     }
   }
+
+  React.useEffect(() => {
+    form.addFieldWillValidateEventListener(fieldWillValidate);
+    form.addFieldDidValidateEventListener(fieldDidValidate);
+    form.addFieldDidResetEventListener(fieldDidReset);
+
+    return function cleanup() {
+      form.removeFieldWillValidateEventListener(fieldWillValidate);
+      form.removeFieldDidValidateEventListener(fieldDidValidate);
+      form.removeFieldDidResetEventListener(fieldDidReset);
+    };
+  });
 
   // Don't forget to update native/FieldFeedbackWhenValid.render()
-  render() {
-    const { form, fieldFeedbacks, style, ...otherProps } = this.props as FieldFeedbackWhenValidProps;
+  function render() {
+    const { style, ...otherProps } = props;
 
-    return this.state.fieldIsValid ?
+    return fieldIsValid ?
       // <span style="display: block"> instead of <div> so FieldFeedbackWhenValid can be wrapped inside a <p>
       // otherProps before className because otherProps contains data-feedback
       <span {...otherProps} style={{display: 'block', ...style}} />
       : null;
   }
-}
+
+  return render();
+};
