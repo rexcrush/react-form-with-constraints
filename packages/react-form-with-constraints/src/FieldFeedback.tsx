@@ -49,7 +49,7 @@ export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props 
   const async = React.useContext(AsyncContext)!;
 
   // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
-  const keyRef = React.useRef(fieldFeedbacks.addFieldFeedback());
+  const key = React.useRef(fieldFeedbacks.addFieldFeedback()).current;
 
   const {
     when, error, warning, info,
@@ -67,7 +67,7 @@ export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props 
   }
 
   const [validation, setValidation] = React.useState<FieldFeedbackValidation>({
-    key: keyRef.current,
+    key,
     type,
     show: undefined // undefined means the FieldFeedback was not checked
   });
@@ -166,7 +166,7 @@ export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props 
     if (validation.type === FieldFeedbackType.WhenValid) {
       return (
         <FieldFeedbackWhenValid
-          data-feedback={keyRef.current}
+          data-feedback={key}
           style={style}
           className={classNames}
           {...otherProps}
@@ -182,7 +182,7 @@ export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props 
       // <span style="display: block"> instead of <div> so FieldFeedback can be wrapped inside a <p>
       return (
         <span
-          data-feedback={keyRef.current}
+          data-feedback={key}
           className={classNames}
           style={{display: 'block', ...style}}
           {...otherProps}
