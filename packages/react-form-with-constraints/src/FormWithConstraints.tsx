@@ -13,8 +13,66 @@ import notUndefined from './notUndefined';
 
 export const FormWithConstraintsContext = React.createContext<FormWithConstraints | undefined>(undefined);
 
-export interface FormWithConstraintsProps extends React.FormHTMLAttributes<HTMLFormElement> {
+export type FormWithConstraintsProps = React.FormHTMLAttributes<HTMLFormElement>;
+
+
+
+/*
+import EventEmitter from './EventEmitter';
+
+type Listener = (field: Field) => void;
+export const FieldDidResetEvent = 'FIELD_DID_RESET_EVENT';
+class ResetFieldEvenEmitter {
+  fieldDidResetEventEmitter = new EventEmitter();
+
+  emitFieldDidResetEvent(field: Field) {
+    return this.fieldDidResetEventEmitter.emit(FieldDidResetEvent, field);
+  }
+
+  addFieldDidResetEventListener(listener: Listener) {
+    this.fieldDidResetEventEmitter.addListener(FieldDidResetEvent, listener);
+  }
+
+  removeFieldDidResetEventListener(listener: Listener) {
+    this.fieldDidResetEventEmitter.removeListener(FieldDidResetEvent, listener);
+  }
 }
+export const FieldDidValidateEvent = 'FIELD_DID_VALIDATE_EVENT';
+class FieldDidValidateEventEmitter {
+  fieldDidValidateEventEmitter = new EventEmitter();
+
+  emitFieldDidValidateEvent(field: Field) {
+    return this.fieldDidValidateEventEmitter.emit(FieldDidValidateEvent, field);
+  }
+
+  addFieldDidValidateEventListener(listener: Listener) {
+    this.fieldDidValidateEventEmitter.addListener(FieldDidValidateEvent, listener);
+  }
+
+  removeFieldDidValidateEventListener(listener: Listener) {
+    this.fieldDidValidateEventEmitter.removeListener(FieldDidValidateEvent, listener);
+  }
+}
+export const FormWithConstraints2: React.FunctionComponent<FormWithConstraintsProps> = props => {
+  // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
+  const resetFieldEvenEmitter = React.useRef(new ResetFieldEvenEmitter()).current;
+  const fieldWillValidateEventEmitter = React.useRef(new FieldWillValidateEventEmitter()).current;
+  const fieldDidValidateEventEmitter = React.useRef(new FieldDidValidateEventEmitter()).current;
+  const validateFieldEventEmitter = React.useRef(new ValidateFieldEventEmitter()).current;
+
+  const form = React.useRef<HTMLFormElement | null>(null).current;
+
+  const fieldsStore = new FieldsStore();
+
+  private fieldFeedbacksKeyCounter = 0;
+  computeFieldFeedbacksKey() {
+    return `${this.fieldFeedbacksKeyCounter++}`;
+  }
+};
+*/
+
+
+
 
 class FormWithConstraintsComponent extends React.Component<FormWithConstraintsProps> {}
 export class FormWithConstraints
