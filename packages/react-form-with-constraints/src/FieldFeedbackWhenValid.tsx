@@ -7,7 +7,7 @@ import Field from './Field';
 
 export type FieldFeedbackWhenValidProps = FieldFeedbackClasses & React.HTMLAttributes<HTMLSpanElement>;
 
-export const FieldFeedbackWhenValid: React.FunctionComponent<FieldFeedbackWhenValidProps> = props => {
+export function FieldFeedbackWhenValid(props: FieldFeedbackWhenValidProps) {
   const form = React.useContext(FormWithConstraintsContext)!;
   const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
 
@@ -55,4 +55,4 @@ export const FieldFeedbackWhenValid: React.FunctionComponent<FieldFeedbackWhenVa
   }
 
   return render();
-};
+}

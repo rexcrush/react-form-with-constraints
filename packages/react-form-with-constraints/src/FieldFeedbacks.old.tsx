@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { FormWithConstraints, FormWithConstraintsContext } from './FormWithConstraints';
+import { FormWithConstraintsApi, FormWithConstraintsContext } from './FormWithConstraints';
 import { withValidateFieldEventEmitter } from './withValidateFieldEventEmitter';
 import { InputElement } from './InputElement';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
@@ -19,72 +19,62 @@ export interface FieldFeedbacksProps {
 
 export const FieldFeedbacksContext = React.createContext<FieldFeedbacksPrivate | undefined>(undefined);
 
-
+// React new context API does not support multiple context with contextType syntax, what a shame :/
 export const FieldFeedbacks: React.FunctionComponent<FieldFeedbacksProps> = props => {
   const form = React.useContext(FormWithConstraintsContext)!;
-  const fieldFeedbacksParent = React.useContext(FieldFeedbacksContext)!;
-
-  // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
-  const validateFieldEventEmitter = React.useRef(new ValidateFieldEventEmitter()).current;
-
-  const instance = React.useRef(new FieldFeedbacksInstance()).current;
-  instance.key = fieldFeedbacksParent ? fieldFeedbacksParent.computeFieldFeedbackKey() : form.computeFieldFeedbacksKey();
-
-  if (fieldFeedbacksParent) {
-    instance.fieldName = fieldFeedbacksParent.fieldName;
-    if (props.for !== undefined) throw new Error("FieldFeedbacks cannot have a parent and a 'for' prop");
-  } else {
-    if (props.for === undefined) throw new Error("FieldFeedbacks cannot be without parent and without 'for' prop");
-    else instance.fieldName = props.for;
-  }
-
-
+  const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
+  return <FieldFeedbacksPrivate {...props} form={form} fieldFeedbacks={fieldFeedbacks} />;
+};
+FieldFeedbacks.defaultProps = {
+  stop: 'first-error'
 };
 
 
-class FieldFeedbacksInstance {
-  // Tested: there is no conflict with React key prop (https://reactjs.org/docs/lists-and-keys.html)
-  key: string; // '0', '1', '2'...
-
-  fieldName: string; // Instead of reading props each time
-
-}
-
-
-
-
-
-export class FieldFeedbacks2 extends React.Component<FieldFeedbacksProps> {
-  static defaultProps: FieldFeedbacksProps = {
-    stop: 'first-error'
-  };
-
-  render() {
-    return (
-      <FormWithConstraintsContext.Consumer>
-        {form =>
-          <FieldFeedbacksContext.Consumer>
-            {fieldFeedbacks => <FieldFeedbacksPrivate {...this.props} form={form!} fieldFeedbacks={fieldFeedbacks} />}
-          </FieldFeedbacksContext.Consumer>
-        }
-      </FormWithConstraintsContext.Consumer>
-    );
-  }
-}
-
-
 interface FieldFeedbacksPrivateContext {
-  form: FormWithConstraints;
+  form: FormWithConstraintsApi;
   fieldFeedbacks?: FieldFeedbacksPrivate;
 }
 
 type FieldFeedbacksPrivateProps = FieldFeedbacksProps & FieldFeedbacksPrivateContext;
 
 class FieldFeedbacksPrivateComponent extends React.Component<FieldFeedbacksPrivateProps> {}
-export class FieldFeedbacksPrivate {
+export class FieldFeedbacksPrivate
+  extends
+    withValidateFieldEventEmitter<
+      // FieldFeedback returns FieldFeedbackValidation
+      // Async returns FieldFeedbackValidation[] | undefined
+      // FieldFeedbacks returns (FieldFeedbackValidation | undefined)[]
+      FieldFeedbackValidation | (FieldFeedbackValidation | undefined)[] | undefined,
+      typeof FieldFeedbacksPrivateComponent
+    >(
+      FieldFeedbacksPrivateComponent
+    ) {
+
+  // Tested: there is no conflict with React key prop (https://reactjs.org/docs/lists-and-keys.html)
+  readonly key: string; // '0', '1', '2'...
+
+  readonly fieldName: string; // Instead of reading props each time
+
+  constructor(props: FieldFeedbacksPrivateProps) {
+    super(props);
+
+    const { form, fieldFeedbacks: fieldFeedbacksParent } = props;
+
+    this.key = fieldFeedbacksParent ? fieldFeedbacksParent.computeFieldFeedbackKey() : form.computeFieldFeedbacksKey();
+
+    if (fieldFeedbacksParent) {
+      this.fieldName = fieldFeedbacksParent.fieldName;
+      if (props.for !== undefined) throw new Error("FieldFeedbacks cannot have a parent and a 'for' prop");
+    } else {
+      if (props.for === undefined) throw new Error("FieldFeedbacks cannot be without parent and without 'for' prop");
+      else this.fieldName = props.for;
+    }
+
+    console.log('FieldFeedbacksPrivate constructor()', this.key);
+  }
 
   private fieldFeedbackKeyCounter = 0;
-  computeFieldFeedbackKey() {
+  private computeFieldFeedbackKey() {
     return `${this.key}.${this.fieldFeedbackKeyCounter++}`;
   }
 
@@ -93,6 +83,7 @@ export class FieldFeedbacksPrivate {
   }
 
   componentWillMount() {
+    console.log('FieldFeedbacksPrivate componentWillMount()', this.key);
     const { form, fieldFeedbacks: fieldFeedbacksParent } = this.props;
 
     form.fieldsStore.addField(this.fieldName);
@@ -102,6 +93,7 @@ export class FieldFeedbacksPrivate {
   }
 
   componentWillUnmount() {
+    console.log('FieldFeedbacksPrivate componentWillUnmount()', this.key);
     const { form, fieldFeedbacks: fieldFeedbacksParent } = this.props;
 
     form.fieldsStore.removeField(this.fieldName);

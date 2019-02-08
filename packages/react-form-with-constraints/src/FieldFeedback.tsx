@@ -39,17 +39,23 @@ export interface FieldFeedbackBaseProps {
   error?: boolean;
   warning?: boolean;
   info?: boolean;
+
+  children?: React.ReactNode;
 }
 
 export type FieldFeedbackProps = FieldFeedbackBaseProps & FieldFeedbackClasses & React.HTMLAttributes<HTMLSpanElement>;
 
-export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props => {
+export function FieldFeedback(props: FieldFeedbackProps) {
   const form = React.useContext(FormWithConstraintsContext)!;
   const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
   const async = React.useContext(AsyncContext);
 
   // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
   const key = React.useRef(fieldFeedbacks.addFieldFeedback()).current;
+  console.log('FieldFeedback key=', key);
+  console.log('FieldFeedback form=', form);
+  console.log('FieldFeedback fieldFeedbacks=', fieldFeedbacks);
+  console.log('FieldFeedback async=', async);
 
   const {
     when, error, warning, info,
@@ -144,6 +150,7 @@ export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props 
 
     field.addOrReplaceValidation(validation);
 
+    console.log('validation=', validation);
     setValidation(validation);
     setValidationMessage(input.validationMessage);
 
@@ -196,7 +203,7 @@ export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props 
   }
 
   return render();
-};
+}
 
 FieldFeedback.defaultProps = {
   when: () => true,

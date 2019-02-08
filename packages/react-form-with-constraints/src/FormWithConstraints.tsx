@@ -11,95 +11,59 @@ import FieldFeedbackValidation from './FieldFeedbackValidation';
 import flattenDeep from './flattenDeep';
 import notUndefined from './notUndefined';
 
-export const FormWithConstraintsContext = React.createContext<FormWithConstraints | undefined>(undefined);
-
-export type FormWithConstraintsProps = React.FormHTMLAttributes<HTMLFormElement>;
-
-
-
-/*
-import EventEmitter from './EventEmitter';
-
-type Listener = (field: Field) => void;
-export const FieldDidResetEvent = 'FIELD_DID_RESET_EVENT';
-class ResetFieldEvenEmitter {
-  fieldDidResetEventEmitter = new EventEmitter();
-
-  emitFieldDidResetEvent(field: Field) {
-    return this.fieldDidResetEventEmitter.emit(FieldDidResetEvent, field);
-  }
-
-  addFieldDidResetEventListener(listener: Listener) {
-    this.fieldDidResetEventEmitter.addListener(FieldDidResetEvent, listener);
-  }
-
-  removeFieldDidResetEventListener(listener: Listener) {
-    this.fieldDidResetEventEmitter.removeListener(FieldDidResetEvent, listener);
-  }
+export interface FormWithConstraintsProps extends React.FormHTMLAttributes<HTMLFormElement> {
+  children: React.ReactNode;
 }
-export const FieldDidValidateEvent = 'FIELD_DID_VALIDATE_EVENT';
-class FieldDidValidateEventEmitter {
-  fieldDidValidateEventEmitter = new EventEmitter();
 
-  emitFieldDidValidateEvent(field: Field) {
-    return this.fieldDidValidateEventEmitter.emit(FieldDidValidateEvent, field);
+export const FormWithConstraintsContext = React.createContext<FormWithConstraintsApi | undefined>(undefined);
+
+export function useFormWithConstraints() {
+  console.log('useFormWithConstraints()');
+
+  const form = React.useRef<HTMLFormElement | null>(null);
+  const api = new FormWithConstraintsApi(form);
+
+  function FormWithConstraints(props: FormWithConstraintsProps) {
+    return (
+      <FormWithConstraintsContext.Provider value={api}>
+        <form ref={form} {...props} />
+      </FormWithConstraintsContext.Provider>
+    );
   }
 
-  addFieldDidValidateEventListener(listener: Listener) {
-    this.fieldDidValidateEventEmitter.addListener(FieldDidValidateEvent, listener);
-  }
+  return {
+    // Rename to form because form.isValid() looks better for the user than api.isValid()
+    form: api,
 
-  removeFieldDidValidateEventListener(listener: Listener) {
-    this.fieldDidValidateEventEmitter.removeListener(FieldDidValidateEvent, listener);
-  }
+    FormWithConstraints
+  };
 }
-export const FormWithConstraints2: React.FunctionComponent<FormWithConstraintsProps> = props => {
-  // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
-  const resetFieldEvenEmitter = React.useRef(new ResetFieldEvenEmitter()).current;
-  const fieldWillValidateEventEmitter = React.useRef(new FieldWillValidateEventEmitter()).current;
-  const fieldDidValidateEventEmitter = React.useRef(new FieldDidValidateEventEmitter()).current;
-  const validateFieldEventEmitter = React.useRef(new ValidateFieldEventEmitter()).current;
 
-  const form = React.useRef<HTMLFormElement | null>(null).current;
-
-  const fieldsStore = new FieldsStore();
-
-  private fieldFeedbacksKeyCounter = 0;
-  computeFieldFeedbacksKey() {
-    return `${this.fieldFeedbacksKeyCounter++}`;
-  }
-};
-*/
-
-
-
-
-class FormWithConstraintsComponent extends React.Component<FormWithConstraintsProps> {}
-export class FormWithConstraints
+export class FormWithConstraintsApi
   extends
     withFieldDidResetEventEmitter(
-      withFieldWillValidateEventEmitter(
-        withFieldDidValidateEventEmitter(
-          withValidateFieldEventEmitter<
-            // FieldFeedback returns FieldFeedbackValidation
-            // Async returns FieldFeedbackValidation[] | undefined
-            // FieldFeedbacks returns (FieldFeedbackValidation | undefined)[] | undefined
-            FieldFeedbackValidation | (FieldFeedbackValidation | undefined)[] | undefined,
-            typeof FormWithConstraintsComponent
-          >(
-            FormWithConstraintsComponent
-          )
-        )
-      )
-    ) {
+    withFieldWillValidateEventEmitter(
+    withFieldDidValidateEventEmitter(
+    withValidateFieldEventEmitter<
+      // FieldFeedback returns FieldFeedbackValidation
+      // Async returns FieldFeedbackValidation[] | undefined
+      // FieldFeedbacks returns (FieldFeedbackValidation | undefined)[] | undefined
+      FieldFeedbackValidation | (FieldFeedbackValidation | undefined)[] | undefined,
+      typeof Object
+    >(Object)))) {
 
   // Could be named innerRef instead, see https://github.com/ant-design/ant-design/issues/5489#issuecomment-332208652
-  private form: HTMLFormElement | null = null;
+  //private form: React.MutableRefObject<HTMLFormElement | null>;
 
-  fieldsStore = new FieldsStore();
+  constructor(private form: React.MutableRefObject<HTMLFormElement | null>) {
+    super();
+    console.log('FormWithConstraintsApi constructor()');
+  }
+
+  public fieldsStore = new FieldsStore();
 
   private fieldFeedbacksKeyCounter = 0;
-  computeFieldFeedbacksKey() {
+  public computeFieldFeedbacksKey() {
     return `${this.fieldFeedbacksKeyCounter++}`;
   }
 
@@ -107,19 +71,19 @@ export class FormWithConstraints
    * Validates the given fields, either HTMLInputElements or field names.
    * If called without arguments, validates all fields ($('[name]')).
    */
-  validateFields(...inputsOrNames: Array<InputElement | string>) {
+  public validateFields(...inputsOrNames: Array<InputElement | string>) {
     return this._validateFields(/* forceValidateFields */ true, ...inputsOrNames);
   }
 
   // TODO To be removed in the future?
-  validateForm() {
+  public validateForm() {
     return this.validateFieldsWithoutFeedback();
   }
 
   /**
    * Validates fields without feedback only.
    */
-  validateFieldsWithoutFeedback(...inputsOrNames: Array<InputElement | string>) {
+  public validateFieldsWithoutFeedback(...inputsOrNames: Array<InputElement | string>) {
     return this._validateFields(/* forceValidateFields */ false, ...inputsOrNames);
   }
 
@@ -177,7 +141,7 @@ export class FormWithConstraints
     if (inputsOrNames.length === 0) {
       // [name] matches <input name="...">, <select name="...">, <button name="...">, ...
       // See Convert JavaScript NodeList to Array? https://stackoverflow.com/a/33822526/990356
-      inputs = [...this.form!.querySelectorAll<HTMLInputElement>('[name]')];
+      inputs = [...this.form.current!.querySelectorAll<HTMLInputElement>('[name]')];
 
       // Remove elements without ValidityState, example:
       // <iframe src="https://www.google.com/recaptcha..." name="a-49ekipqfmwsv">
@@ -203,7 +167,7 @@ export class FormWithConstraints
       inputs = inputsOrNames.map(input => {
         if (typeof input === 'string') {
           const query = `[name="${input}"]`;
-          const elements = [...this.form!.querySelectorAll<HTMLInputElement>(query)];
+          const elements = [...this.form.current!.querySelectorAll<HTMLInputElement>(query)];
 
           // Checks
 
@@ -231,20 +195,20 @@ export class FormWithConstraints
   }
 
   // More like seemsToBeValid(): return true if fields are untouched
-  isValid() {
+  public isValid() {
     return this.fieldsStore.isValid();
   }
 
-  hasFeedbacks() {
+  public hasFeedbacks() {
     return this.fieldsStore.hasFeedbacks();
   }
 
   // TODO To be removed in the future?
-  reset() {
+  public reset() {
     return this.resetFields();
   }
 
-  async resetFields(...inputsOrNames: Array<InputElement | string>) {
+  public async resetFields(...inputsOrNames: Array<InputElement | string>) {
     const fields = new Array<Readonly<Field>>();
 
     const inputs = this.normalizeInputs(...inputsOrNames);
@@ -270,13 +234,5 @@ export class FormWithConstraints
     }
 
     return field;
-  }
-
-  render() {
-    return (
-      <FormWithConstraintsContext.Provider value={this}>
-        <form ref={form => this.form = form} {...this.props} />
-      </FormWithConstraintsContext.Provider>
-    );
   }
 }
