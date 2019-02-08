@@ -22,19 +22,16 @@ export interface AsyncProps<T> {
 
 export const AsyncContext = React.createContext<AsyncPrivate<any> | undefined>(undefined);
 
-export const Async: React.FunctionComponent<AsyncProps<any>> = props =>
-  <FormWithConstraintsContext.Consumer>
-    {form =>
-      <FieldFeedbacksContext.Consumer>
-        {fieldFeedbacks => <AsyncPrivate {...props} form={form!} fieldFeedbacks={fieldFeedbacks!} />}
-      </FieldFeedbacksContext.Consumer>
-    }
-  </FormWithConstraintsContext.Consumer>;
+export const Async: React.FunctionComponent<AsyncProps<any>> = props => {
+  const form = React.useContext(FormWithConstraintsContext)!;
+  const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
+  return <AsyncPrivate {...props} form={form!} fieldFeedbacks={fieldFeedbacks} />;
+};
 
 
 interface AsyncPrivateContext {
-  form: FormWithConstraints;
-  fieldFeedbacks: FieldFeedbacksPrivate;
+  form: FormWithConstraintsApi;
+  fieldFeedbacks: FieldFeedbacksApi;
 }
 
 type AsyncPrivateProps<T> = AsyncProps<T> & AsyncPrivateContext;
