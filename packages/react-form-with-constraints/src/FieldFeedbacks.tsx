@@ -27,13 +27,44 @@ export function FieldFeedbacks(props: FieldFeedbacksProps) {
 
   const api = new FieldFeedbacksApi(props, form, fieldFeedbacksParent);
 
+  const parent = fieldFeedbacksParent ? fieldFeedbacksParent : form;
+
   React.useEffect(() => {
-    api.register();
+    form.fieldsStore.addField(api.fieldName);
+    parent.addValidateFieldEventListener(validate);
 
     return function cleanup() {
-      api.unregister();
+      form.fieldsStore.removeField(api.fieldName);
+      parent.removeValidateFieldEventListener(validate);
     };
   });
+
+  async function validate(input: InputElement) {
+    let validations;
+
+    if (input.name === api.fieldName) { // Ignore the event if it's not for us
+      const field = form.fieldsStore.getField(api.fieldName)!;
+
+      if (fieldFeedbacksParent && (
+          fieldFeedbacksParent.props.stop === 'first' && field.hasFeedbacks(fieldFeedbacksParent.key) ||
+          fieldFeedbacksParent.props.stop === 'first-error' && field.hasErrors(fieldFeedbacksParent.key) ||
+          fieldFeedbacksParent.props.stop === 'first-warning' && field.hasWarnings(fieldFeedbacksParent.key) ||
+          fieldFeedbacksParent.props.stop === 'first-info' && field.hasInfos(fieldFeedbacksParent.key))) {
+        // Do nothing
+      }
+      else {
+        validations = await _validate(input);
+      }
+    }
+
+    return validations;
+  }
+
+  async function _validate(input: InputElement) {
+    const arrayOfArrays = await api.emitValidateFieldEvent(input);
+    const validations = flattenDeep<FieldFeedbackValidation | undefined>(arrayOfArrays);
+    return validations;
+  }
 
   function render() {
     const { children } = props;
@@ -70,9 +101,7 @@ export class FieldFeedbacksApi
 
   public readonly fieldName: string; // Instead of reading props each time
 
-  private readonly parent: FieldFeedbacksApi | FormWithConstraintsApi;
-
-  constructor(public props: FieldFeedbacksProps, private form: FormWithConstraintsApi, private fieldFeedbacksParent?: FieldFeedbacksApi) {
+  constructor(public props: FieldFeedbacksProps, form: FormWithConstraintsApi, fieldFeedbacksParent?: FieldFeedbacksApi) {
     super();
 
     this.key = fieldFeedbacksParent ? fieldFeedbacksParent.computeFieldFeedbackKey() : form.computeFieldFeedbacksKey();
@@ -85,8 +114,6 @@ export class FieldFeedbacksApi
       else this.fieldName = props.for;
     }
 
-    this.parent = this.fieldFeedbacksParent ? this.fieldFeedbacksParent : this.form;
-
     console.log('FieldFeedbacksPrivate constructor()', this.key);
   }
 
@@ -95,44 +122,7 @@ export class FieldFeedbacksApi
     return `${this.key}.${this.fieldFeedbackKeyCounter++}`;
   }
 
-  public register() {
-    this.form.fieldsStore.addField(this.fieldName);
-    this.parent.addValidateFieldEventListener(this.validate);
-  }
-
-  public unregister() {
-    this.form.fieldsStore.removeField(this.fieldName);
-    this.parent.removeValidateFieldEventListener(this.validate);
-  }
-
   public addFieldFeedback() {
     return this.computeFieldFeedbackKey();
-  }
-
-  private validate = async (input: InputElement) => {
-    let validations;
-
-    if (input.name === this.fieldName) { // Ignore the event if it's not for us
-      const field = this.form.fieldsStore.getField(this.fieldName)!;
-
-      if (this.fieldFeedbacksParent && (
-          this.fieldFeedbacksParent.props.stop === 'first' && field.hasFeedbacks(this.fieldFeedbacksParent.key) ||
-          this.fieldFeedbacksParent.props.stop === 'first-error' && field.hasErrors(this.fieldFeedbacksParent.key) ||
-          this.fieldFeedbacksParent.props.stop === 'first-warning' && field.hasWarnings(this.fieldFeedbacksParent.key) ||
-          this.fieldFeedbacksParent.props.stop === 'first-info' && field.hasInfos(this.fieldFeedbacksParent.key))) {
-        // Do nothing
-      }
-      else {
-        validations = await this._validate(input);
-      }
-    }
-
-    return validations;
-  }
-
-  private async _validate(input: InputElement) {
-    const arrayOfArrays = await this.emitValidateFieldEvent(input);
-    const validations = flattenDeep<FieldFeedbackValidation | undefined>(arrayOfArrays);
-    return validations;
   }
 }
