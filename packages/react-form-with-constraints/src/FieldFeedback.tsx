@@ -46,7 +46,7 @@ export type FieldFeedbackProps = FieldFeedbackBaseProps & FieldFeedbackClasses &
 export const FieldFeedback: React.FunctionComponent<FieldFeedbackProps> = props => {
   const form = React.useContext(FormWithConstraintsContext)!;
   const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
-  const async = React.useContext(AsyncContext)!;
+  const async = React.useContext(AsyncContext);
 
   // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
   const key = React.useRef(fieldFeedbacks.addFieldFeedback()).current;

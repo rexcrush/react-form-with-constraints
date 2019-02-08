@@ -19,23 +19,15 @@ export interface FieldFeedbacksProps {
 
 export const FieldFeedbacksContext = React.createContext<FieldFeedbacksPrivate | undefined>(undefined);
 
-export class FieldFeedbacks extends React.Component<FieldFeedbacksProps> {
-  static defaultProps: FieldFeedbacksProps = {
-    stop: 'first-error'
-  };
-
-  render() {
-    return (
-      <FormWithConstraintsContext.Consumer>
-        {form =>
-          <FieldFeedbacksContext.Consumer>
-            {fieldFeedbacks => <FieldFeedbacksPrivate {...this.props} form={form!} fieldFeedbacks={fieldFeedbacks} />}
-          </FieldFeedbacksContext.Consumer>
-        }
-      </FormWithConstraintsContext.Consumer>
-    );
-  }
-}
+// React new context API does not support multiple context with contextType syntax, what a shame :/
+export const FieldFeedbacks: React.FunctionComponent<FieldFeedbacksProps> = props => {
+  const form = React.useContext(FormWithConstraintsContext)!;
+  const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
+  return <FieldFeedbacksPrivate {...props} form={form} fieldFeedbacks={fieldFeedbacks} />;
+};
+FieldFeedbacks.defaultProps = {
+  stop: 'first-error'
+};
 
 
 interface FieldFeedbacksPrivateContext {
