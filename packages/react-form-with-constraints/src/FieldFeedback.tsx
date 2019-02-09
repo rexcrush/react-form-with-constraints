@@ -66,15 +66,17 @@ export function FieldFeedback(props: FieldFeedbackProps) {
     throw new Error('Cannot have an attribute (error, warning...) with FieldFeedback when="valid"');
   }
 
-  const [validation, setValidation] = React.useState<FieldFeedbackValidation>({
-    key: undefined as any, // Have to wait for useEffect()
-    type,
-    show: undefined // undefined means the FieldFeedback was not checked
-  });
 
   // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
   const key = React.useRef<string | undefined>(undefined);
   const id = React.useRef<string | undefined>(undefined);
+
+  const [validation, setValidation] = React.useState<FieldFeedbackValidation>({
+    key: key.current!, // Have to wait for useEffect()
+    type,
+    show: undefined // undefined means the FieldFeedback was not checked
+  });
+
   React.useEffect(() => {
     key.current = fieldFeedbacks.addFieldFeedback();
     id.current = uniqueId();
