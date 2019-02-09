@@ -47,10 +47,6 @@
     "react": ">=16"
   },
 
-  "dependencies": {
-    "prop-types": "^15.6.2"
-  },
-
   "devDependencies": {
     "typescript": "latest",
 

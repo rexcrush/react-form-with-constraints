@@ -47,11 +47,11 @@ export function FieldFeedbackWhenValid(props: FieldFeedbackWhenValidProps) {
   function render() {
     const { style, ...otherProps } = props;
 
-    return fieldIsValid ?
-      // <span style="display: block"> instead of <div> so FieldFeedbackWhenValid can be wrapped inside a <p>
-      // otherProps before className because otherProps contains data-feedback
-      <span {...otherProps} style={{display: 'block', ...style}} />
-      : null;
+    console.log('> FieldFeedbackWhenValid() fieldIsValid=', fieldIsValid);
+
+    // <span style="display: block"> instead of <div> so FieldFeedbackWhenValid can be wrapped inside a <p>
+    // otherProps before className because otherProps contains data-feedback
+    return <span {...otherProps} style={{display: fieldIsValid ? 'block' : 'none', ...style}} />;
   }
 
   return render();

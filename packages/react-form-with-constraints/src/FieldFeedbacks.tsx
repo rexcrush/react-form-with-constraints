@@ -5,6 +5,7 @@ import { withValidateFieldEventEmitter } from './withValidateFieldEventEmitter';
 import { InputElement } from './InputElement';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import flattenDeep from './flattenDeep';
+import { uniqueId } from 'lodash';
 
 export interface FieldFeedbacksProps {
   for?: string;
@@ -23,9 +24,10 @@ export const FieldFeedbacksContext = React.createContext<FieldFeedbacksApi | und
 
 export function FieldFeedbacks(props: FieldFeedbacksProps) {
   const form = React.useContext(FormWithConstraintsContext)!;
-  const fieldFeedbacksParent = React.useContext(FieldFeedbacksContext);
+  const fieldFeedbacksParent = React.useContext(FieldFeedbacksContext); // Can be undefined
 
   const api = new FieldFeedbacksApi(props, form, fieldFeedbacksParent);
+  console.log('  FieldFeedbacks() name=', api.fieldName, 'form.id=', form.id);
 
   const parent = fieldFeedbacksParent ? fieldFeedbacksParent : form;
 
@@ -40,6 +42,8 @@ export function FieldFeedbacks(props: FieldFeedbacksProps) {
   });
 
   async function validate(input: InputElement) {
+    console.log('  FieldFeedbacks.validate() key=', api.key);
+
     let validations;
 
     if (input.name === api.fieldName) { // Ignore the event if it's not for us
@@ -101,6 +105,8 @@ export class FieldFeedbacksApi
 
   public readonly fieldName: string; // Instead of reading props each time
 
+  id = uniqueId();
+
   constructor(public props: FieldFeedbacksProps, form: FormWithConstraintsApi, fieldFeedbacksParent?: FieldFeedbacksApi) {
     super();
 
@@ -114,7 +120,7 @@ export class FieldFeedbacksApi
       else this.fieldName = props.for;
     }
 
-    console.log('FieldFeedbacksPrivate constructor()', this.key);
+    console.log('  FieldFeedbacksApi id=', this.id, 'key=', this.key);
   }
 
   private fieldFeedbackKeyCounter = 0;
@@ -123,6 +129,8 @@ export class FieldFeedbacksApi
   }
 
   public addFieldFeedback() {
-    return this.computeFieldFeedbackKey();
+    const tmp = this.computeFieldFeedbackKey();
+    console.log('  FieldFeedbacksApi addFieldFeedback() FieldFeedbackKey=', tmp);
+    return tmp;
   }
 }

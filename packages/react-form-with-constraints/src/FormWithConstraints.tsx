@@ -10,6 +10,7 @@ import { FieldsStore } from './FieldsStore';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import flattenDeep from './flattenDeep';
 import notUndefined from './notUndefined';
+import { uniqueId } from 'lodash';
 
 export interface FormWithConstraintsProps extends React.FormHTMLAttributes<HTMLFormElement> {
   children: React.ReactNode;
@@ -18,10 +19,9 @@ export interface FormWithConstraintsProps extends React.FormHTMLAttributes<HTMLF
 export const FormWithConstraintsContext = React.createContext<FormWithConstraintsApi | undefined>(undefined);
 
 export function useFormWithConstraints() {
-  console.log('useFormWithConstraints()');
-
   const form = React.useRef<HTMLFormElement | null>(null);
   const api = new FormWithConstraintsApi(form);
+  console.log('useFormWithConstraints() api.id=', api.id);
 
   function FormWithConstraints(props: FormWithConstraintsProps) {
     return (
@@ -55,9 +55,11 @@ export class FormWithConstraintsApi
   // Could be named innerRef instead, see https://github.com/ant-design/ant-design/issues/5489#issuecomment-332208652
   //private form: React.MutableRefObject<HTMLFormElement | null>;
 
+  id = uniqueId();
+
   constructor(private form: React.MutableRefObject<HTMLFormElement | null>) {
     super();
-    console.log('FormWithConstraintsApi constructor()');
+    console.log('FormWithConstraintsApi() id=', this.id);
   }
 
   public fieldsStore = new FieldsStore();
@@ -115,6 +117,8 @@ export class FormWithConstraintsApi
       this.emitFieldWillValidateEvent(fieldName);
 
       const arrayOfArrays = await this.emitValidateFieldEvent(input);
+
+      console.log('FormWithConstraintsApi.validateField() id=', this.id);
 
       // Internal check that everything is OK
       // Can be temporary out of sync if the user rapidly change the input, in this case:
