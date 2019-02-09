@@ -69,8 +69,6 @@ export class FieldFeedbacksPrivate
       if (props.for === undefined) throw new Error("FieldFeedbacks cannot be without parent and without 'for' prop");
       else this.fieldName = props.for;
     }
-
-    console.log('FieldFeedbacksPrivate constructor()', this.key);
   }
 
   private fieldFeedbackKeyCounter = 0;
@@ -83,7 +81,6 @@ export class FieldFeedbacksPrivate
   }
 
   componentWillMount() {
-    console.log('FieldFeedbacksPrivate componentWillMount()', this.key);
     const { form, fieldFeedbacks: fieldFeedbacksParent } = this.props;
 
     form.fieldsStore.addField(this.fieldName);
@@ -93,7 +90,6 @@ export class FieldFeedbacksPrivate
   }
 
   componentWillUnmount() {
-    console.log('FieldFeedbacksPrivate componentWillUnmount()', this.key);
     const { form, fieldFeedbacks: fieldFeedbacksParent } = this.props;
 
     form.fieldsStore.removeField(this.fieldName);

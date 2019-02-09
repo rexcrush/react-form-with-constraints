@@ -41,13 +41,11 @@ export function FieldFeedbackWhenValid(props: FieldFeedbackWhenValidProps) {
       form.removeFieldDidValidateEventListener(fieldDidValidate);
       form.removeFieldDidResetEventListener(fieldDidReset);
     };
-  });
+  }, []);
 
   // Don't forget to update native/FieldFeedbackWhenValid.render()
   function render() {
     const { style, ...otherProps } = props;
-
-    console.log('> FieldFeedbackWhenValid() fieldIsValid=', fieldIsValid);
 
     // <span style="display: block"> instead of <div> so FieldFeedbackWhenValid can be wrapped inside a <p>
     // otherProps before className because otherProps contains data-feedback

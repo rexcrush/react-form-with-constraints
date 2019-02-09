@@ -42,7 +42,7 @@ export function Async<T>(props: AsyncProps<T>) {
     return function cleanup() {
       fieldFeedbacks.removeValidateFieldEventListener(validate);
     };
-  });
+  }, []);
 
   function validate(input: InputElement) {
     let validations;

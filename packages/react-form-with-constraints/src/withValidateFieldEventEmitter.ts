@@ -1,7 +1,6 @@
 import EventEmitter from './EventEmitter';
 import { InputElement } from './InputElement';
 import Constructor from './Constructor';
-import { uniqueId } from 'lodash';
 
 export const ValidateFieldEvent = 'VALIDATE_FIELD_EVENT';
 
@@ -12,14 +11,7 @@ export function withValidateFieldEventEmitter<ListenerReturnType, TBase extends 
   return class ValidateFieldEventEmitter extends Base {
     validateFieldEventEmitter = new EventEmitter<ListenerReturnType>();
 
-    id = uniqueId();
-    constructor(..._args: any[]) {
-      super();
-      console.log('ValidateFieldEventEmitter id=', this.id);
-    }
-
     emitValidateFieldEvent(input: InputElement) {
-      console.log('ValidateFieldEventEmitter.emitValidateFieldEvent() id=', this.id);
       return this.validateFieldEventEmitter.emit(ValidateFieldEvent, input);
     }
 

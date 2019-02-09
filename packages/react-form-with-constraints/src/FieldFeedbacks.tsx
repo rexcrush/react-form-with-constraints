@@ -5,7 +5,6 @@ import { withValidateFieldEventEmitter } from './withValidateFieldEventEmitter';
 import { InputElement } from './InputElement';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import flattenDeep from './flattenDeep';
-import { uniqueId } from 'lodash';
 
 export interface FieldFeedbacksProps {
   for?: string;
@@ -27,7 +26,6 @@ export function FieldFeedbacks(props: FieldFeedbacksProps) {
   const fieldFeedbacksParent = React.useContext(FieldFeedbacksContext); // Can be undefined
 
   const api = new FieldFeedbacksApi(props, form, fieldFeedbacksParent);
-  console.log('  FieldFeedbacks() name=', api.fieldName, 'form.id=', form.id);
 
   const parent = fieldFeedbacksParent ? fieldFeedbacksParent : form;
 
@@ -39,11 +37,9 @@ export function FieldFeedbacks(props: FieldFeedbacksProps) {
       form.fieldsStore.removeField(api.fieldName);
       parent.removeValidateFieldEventListener(validate);
     };
-  });
+  }, []);
 
   async function validate(input: InputElement) {
-    console.log('  FieldFeedbacks.validate() key=', api.key);
-
     let validations;
 
     if (input.name === api.fieldName) { // Ignore the event if it's not for us
@@ -105,8 +101,6 @@ export class FieldFeedbacksApi
 
   public readonly fieldName: string; // Instead of reading props each time
 
-  id = uniqueId();
-
   constructor(public props: FieldFeedbacksProps, form: FormWithConstraintsApi, fieldFeedbacksParent?: FieldFeedbacksApi) {
     super();
 
@@ -119,8 +113,6 @@ export class FieldFeedbacksApi
       if (props.for === undefined) throw new Error("FieldFeedbacks cannot be without parent and without 'for' prop");
       else this.fieldName = props.for;
     }
-
-    console.log('  FieldFeedbacksApi id=', this.id, 'key=', this.key);
   }
 
   private fieldFeedbackKeyCounter = 0;
@@ -129,8 +121,6 @@ export class FieldFeedbacksApi
   }
 
   public addFieldFeedback() {
-    const tmp = this.computeFieldFeedbackKey();
-    console.log('  FieldFeedbacksApi addFieldFeedback() FieldFeedbackKey=', tmp);
-    return tmp;
+    return this.computeFieldFeedbackKey();
   }
 }

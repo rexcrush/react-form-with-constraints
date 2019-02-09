@@ -1,13 +1,10 @@
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import FieldFeedbackType from './FieldFeedbackType';
 import clearArray from './clearArray';
-import { uniqueId } from 'lodash';
 
 // Field is a better name than Input, see Django Form fields https://docs.djangoproject.com/en/1.11/ref/forms/fields/
 export default class Field {
   public readonly validations: FieldFeedbackValidation[] = [];
-
-  id = uniqueId();
 
   constructor(public readonly name: string) {}
 
@@ -16,12 +13,9 @@ export default class Field {
     const i = this.validations.findIndex(_validation => _validation.key === validation.key);
     if (i > -1) this.validations[i] = validation;
     else this.validations.push(validation);
-
-    console.log('      Field.addOrReplaceValidation() id=', this.id, 'validation=', validation, 'validations.length=', this.validations.length);
   }
 
   clearValidations() {
-    console.log('      Field.clearValidations() id=', this.id);
     clearArray(this.validations);
   }
 
