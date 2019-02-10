@@ -5,6 +5,7 @@ import { withValidateFieldEventEmitter } from './withValidateFieldEventEmitter';
 import { InputElement } from './InputElement';
 import FieldFeedbackValidation from './FieldFeedbackValidation';
 import flattenDeep from './flattenDeep';
+import { uniqueId } from 'lodash';
 
 export interface FieldFeedbacksProps {
   for?: string;
@@ -46,10 +47,10 @@ export function FieldFeedbacks(props: FieldFeedbacksProps) {
       const field = form.fieldsStore.getField(api.fieldName)!;
 
       if (fieldFeedbacksParent && (
-          fieldFeedbacksParent.props.stop === 'first' && field.hasFeedbacks(fieldFeedbacksParent.key) ||
-          fieldFeedbacksParent.props.stop === 'first-error' && field.hasErrors(fieldFeedbacksParent.key) ||
-          fieldFeedbacksParent.props.stop === 'first-warning' && field.hasWarnings(fieldFeedbacksParent.key) ||
-          fieldFeedbacksParent.props.stop === 'first-info' && field.hasInfos(fieldFeedbacksParent.key))) {
+          fieldFeedbacksParent.props.stop === 'first' && field.hasFeedbacks(fieldFeedbacksParent.id) ||
+          fieldFeedbacksParent.props.stop === 'first-error' && field.hasErrors(fieldFeedbacksParent.id) ||
+          fieldFeedbacksParent.props.stop === 'first-warning' && field.hasWarnings(fieldFeedbacksParent.id) ||
+          fieldFeedbacksParent.props.stop === 'first-info' && field.hasInfos(fieldFeedbacksParent.id))) {
         // Do nothing
       }
       else {
@@ -96,15 +97,17 @@ export class FieldFeedbacksApi
       typeof Object
     >(Object) {
 
-  // Tested: there is no conflict with React key prop (https://reactjs.org/docs/lists-and-keys.html)
-  public readonly key: string; // '0', '1', '2'...
+  public readonly id: string; // '0', '1', '2'...
 
   public readonly fieldName: string; // Instead of reading props each time
+
+  uniqueId = uniqueId();
 
   constructor(public props: FieldFeedbacksProps, form: FormWithConstraintsApi, fieldFeedbacksParent?: FieldFeedbacksApi) {
     super();
 
-    this.key = fieldFeedbacksParent ? fieldFeedbacksParent.computeFieldFeedbackKey() : form.computeFieldFeedbacksKey();
+    console.log('FieldFeedbacksApi uniqueId=', this.uniqueId);
+    this.id = fieldFeedbacksParent ? fieldFeedbacksParent.computeFieldFeedbackId() : form.computeFieldFeedbacksId();
 
     if (fieldFeedbacksParent) {
       this.fieldName = fieldFeedbacksParent.fieldName;
@@ -115,12 +118,12 @@ export class FieldFeedbacksApi
     }
   }
 
-  private fieldFeedbackKeyCounter = 0;
-  private computeFieldFeedbackKey() {
-    return `${this.key}.${this.fieldFeedbackKeyCounter++}`;
+  private fieldFeedbackIdCounter = 0;
+  private computeFieldFeedbackId() {
+    return `${this.id}.${this.fieldFeedbackIdCounter++}`;
   }
 
   public addFieldFeedback() {
-    return this.computeFieldFeedbackKey();
+    return this.computeFieldFeedbackId();
   }
 }

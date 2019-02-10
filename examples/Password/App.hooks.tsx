@@ -10,7 +10,7 @@ export function Form() {
   const { form, FormWithConstraints } = useFormWithConstraints();
 
   const [signUpButtonDisabled/*, setSignUpButtonDisabled*/] = React.useState(false);
-  const [email/*, setEmail*/] = React.useState('');
+  const [email, setEmail] = React.useState('');
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,11 +29,12 @@ export function Form() {
 
   async function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const target = e.target;
-
-    //setEmail(target.value);
+    const value = target.value;
 
     // Validates only the given field and returns the related FieldValidation structures
     const fields = await form.validateFields(target);
+
+    setEmail(value);
 
     const fieldIsValid = fields.every(fieldFeedbacksValidation => fieldFeedbacksValidation.isValid());
     if (fieldIsValid) console.log(`Field '${target.name}' is valid`);
@@ -47,16 +48,16 @@ export function Form() {
 
   function render() {
     return (
-      <FormWithConstraints onSubmit={handleSubmit} noValidate>
+      <FormWithConstraints key={1} onSubmit={handleSubmit} noValidate>
         <div>
           <label htmlFor="email">Email</label>
           <input type="email" name="email" id="email"
                  value={email} onChange={handleChange}
                  required minLength={5} />
-          <FieldFeedbacks for="email">
-            <FieldFeedback when="tooShort">Too short</FieldFeedback>
-            <FieldFeedback when="*" />
-            <FieldFeedback when="valid">Looks good!</FieldFeedback>
+          <FieldFeedbacks key={11} for="email">
+            <FieldFeedback key={111} when="tooShort">Too short</FieldFeedback>
+            <FieldFeedback key={112} when="*" />
+            {/* <FieldFeedback key={113} when="valid">Looks good!</FieldFeedback> */}
           </FieldFeedbacks>
         </div>
 

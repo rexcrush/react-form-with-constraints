@@ -44,6 +44,11 @@ export interface FieldFeedbackBaseProps {
 
 export type FieldFeedbackProps = FieldFeedbackBaseProps & FieldFeedbackClasses & React.HTMLAttributes<HTMLSpanElement>;
 
+// See [Emulate forceUpdate with React Hooks](https://www.slightedgecoder.com/2018/11/08/emulate-forceupdate-with-react-hooks/)
+/*function useForceUpdate() {
+  return React.useState(undefined)[1];
+}*/
+
 export function FieldFeedback(props: FieldFeedbackProps) {
   const form = React.useContext(FormWithConstraintsContext)!;
   const fieldFeedbacks = React.useContext(FieldFeedbacksContext)!;
@@ -65,7 +70,7 @@ export function FieldFeedback(props: FieldFeedbackProps) {
   }
 
   // See https://reactjs.org/docs/hooks-faq.html#is-there-something-like-instance-variables
-  const key = React.useRef<string | undefined>(undefined);
+  const id = React.useRef<string | undefined>(undefined);
 
   // undefined means the FieldFeedback was not checked
   const [show, setShow] = React.useState<boolean | undefined>(undefined);
@@ -76,13 +81,17 @@ export function FieldFeedback(props: FieldFeedbackProps) {
   const [validationMessage, setValidationMessage] = React.useState('');
 
   React.useEffect(() => {
-    key.current = fieldFeedbacks.addFieldFeedback();
+    id.current = fieldFeedbacks.addFieldFeedback();
+  }, []);
 
+  React.useEffect(() => {
+    console.log('FieldFeedback.useEffect() fieldFeedbacks.id=', fieldFeedbacks.uniqueId);
     if (async) async.addValidateFieldEventListener(validate);
     else fieldFeedbacks.addValidateFieldEventListener(validate);
     form.addFieldDidResetEventListener(fieldDidReset);
 
     return function cleanup() {
+      console.log('FieldFeedback.useEffect().cleanup() fieldFeedbacks.id=', fieldFeedbacks.uniqueId);
       if (async) async.removeValidateFieldEventListener(validate);
       else fieldFeedbacks.removeValidateFieldEventListener(validate);
       form.removeFieldDidResetEventListener(fieldDidReset);
@@ -90,35 +99,36 @@ export function FieldFeedback(props: FieldFeedbackProps) {
   }, []);
 
   function validate(input: InputElement) {
+    console.log('FieldFeedback.validate() input=', input, 'fieldFeedbacks.id=', fieldFeedbacks.uniqueId);
     const field = form.fieldsStore.getField(input.name)!;
 
-    let showUpdated = show; // Copy state so we don't modify it directly (use of setState() instead)
+    let shouldShow = show;
 
-    if (fieldFeedbacks.props.stop === 'first' && field.hasFeedbacks(fieldFeedbacks.key) ||
-        fieldFeedbacks.props.stop === 'first-error' && field.hasErrors(fieldFeedbacks.key) ||
-        fieldFeedbacks.props.stop === 'first-warning' && field.hasWarnings(fieldFeedbacks.key) ||
-        fieldFeedbacks.props.stop === 'first-info' && field.hasInfos(fieldFeedbacks.key)) {
+    if (fieldFeedbacks.props.stop === 'first' && field.hasFeedbacks(fieldFeedbacks.id) ||
+        fieldFeedbacks.props.stop === 'first-error' && field.hasErrors(fieldFeedbacks.id) ||
+        fieldFeedbacks.props.stop === 'first-warning' && field.hasWarnings(fieldFeedbacks.id) ||
+        fieldFeedbacks.props.stop === 'first-info' && field.hasInfos(fieldFeedbacks.id)) {
       // Do nothing
-      showUpdated = undefined; // undefined means the FieldFeedback was not checked
+      shouldShow = undefined; // undefined means the FieldFeedback was not checked
     }
 
     else {
-      showUpdated = false;
+      shouldShow = false;
 
       if (typeof when === 'function') {
-        showUpdated = when(input.value);
+        shouldShow = when(input.value);
       }
 
       else if (typeof when === 'string') {
         if (when === 'valid') {
           // undefined => special case for when="valid": always displayed, then FieldFeedbackWhenValid decides what to do
-          showUpdated = undefined;
+          shouldShow = undefined;
         } else {
           const validity = input.validity;
 
           if (!validity.valid) {
             if (when === '*') {
-              showUpdated = true;
+              shouldShow = true;
             }
             else if (
               validity.badInput && when === 'badInput' ||
@@ -131,7 +141,7 @@ export function FieldFeedback(props: FieldFeedbackProps) {
               validity.typeMismatch && when === 'typeMismatch' ||
               validity.valueMissing && when === 'valueMissing') {
 
-              showUpdated = true;
+              shouldShow = true;
             }
           }
         }
@@ -142,11 +152,11 @@ export function FieldFeedback(props: FieldFeedbackProps) {
       }
     }
 
-    const validation = {key: key.current!, type, show: showUpdated};
-
+    const validation = {id: id.current!, type, show: shouldShow};
+    console.log('FieldFeedback.validate() validation=', validation, 'fieldFeedbacks.id=', fieldFeedbacks.uniqueId);
     field.addOrReplaceValidation(validation);
 
-    setShow(showUpdated);
+    setShow(shouldShow);
     setValidationMessage(input.validationMessage);
 
     return validation;
@@ -170,7 +180,7 @@ export function FieldFeedback(props: FieldFeedbackProps) {
     if (type === FieldFeedbackType.WhenValid) {
       el = (
         <FieldFeedbackWhenValid
-          data-feedback={key.current}
+          data-feedback={id.current}
           className={classNames}
           style={style}
           {...otherProps}
@@ -186,7 +196,7 @@ export function FieldFeedback(props: FieldFeedbackProps) {
       // <span style="display: block"> instead of <div> so FieldFeedback can be wrapped inside a <p>
       el = (
         <span
-          data-feedback={key.current}
+          data-feedback={id.current}
           className={classNames}
           style={{display: show ? 'block' : 'none', ...style}}
           {...otherProps}
@@ -196,6 +206,7 @@ export function FieldFeedback(props: FieldFeedbackProps) {
       );
     }
 
+    console.log('FieldFeedback.render() id=', id.current, 'type=', type, 'show=', show);
     return el;
   }
 

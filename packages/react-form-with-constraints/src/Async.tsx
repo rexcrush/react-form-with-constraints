@@ -49,10 +49,10 @@ export function Async<T>(props: AsyncProps<T>) {
 
     const field = form.fieldsStore.getField(input.name)!;
 
-    if (fieldFeedbacks.props.stop === 'first' && field.hasFeedbacks(fieldFeedbacks.key) ||
-        fieldFeedbacks.props.stop === 'first-error' && field.hasErrors(fieldFeedbacks.key) ||
-        fieldFeedbacks.props.stop === 'first-warning' && field.hasWarnings(fieldFeedbacks.key) ||
-        fieldFeedbacks.props.stop === 'first-info' && field.hasInfos(fieldFeedbacks.key)) {
+    if (fieldFeedbacks.props.stop === 'first' && field.hasFeedbacks(fieldFeedbacks.id) ||
+        fieldFeedbacks.props.stop === 'first-error' && field.hasErrors(fieldFeedbacks.id) ||
+        fieldFeedbacks.props.stop === 'first-warning' && field.hasWarnings(fieldFeedbacks.id) ||
+        fieldFeedbacks.props.stop === 'first-info' && field.hasInfos(fieldFeedbacks.id)) {
       // Reset UI
       setStatus(Status.None);
     }

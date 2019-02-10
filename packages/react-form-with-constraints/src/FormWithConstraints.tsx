@@ -30,7 +30,7 @@ export function useFormWithConstraints() {
   }
 
   return {
-    // Rename to form because form.isValid() looks better for the user than api.isValid()
+    // Rename to form because form.isValid() looks better to the user than api.isValid()
     form: api,
 
     FormWithConstraints
@@ -50,6 +50,7 @@ export class FormWithConstraintsApi
       typeof Object
     >(Object)))) {
 
+  // FIXME Use a forwardRef
   // Could be named innerRef instead, see https://github.com/ant-design/ant-design/issues/5489#issuecomment-332208652
   //private form: React.MutableRefObject<HTMLFormElement | null>;
 
@@ -59,9 +60,9 @@ export class FormWithConstraintsApi
 
   public fieldsStore = new FieldsStore();
 
-  private fieldFeedbacksKeyCounter = 0;
-  public computeFieldFeedbacksKey() {
-    return `${this.fieldFeedbacksKeyCounter++}`;
+  private fieldFeedbacksIdCounter = 0;
+  public computeFieldFeedbacksId() {
+    return `${this.fieldFeedbacksIdCounter++}`;
   }
 
   /**
