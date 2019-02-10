@@ -44,15 +44,14 @@
   },
 
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=16.8.1"
   },
 
   "devDependencies": {
     "typescript": "latest",
 
-    "react": "next",
+    "react": "latest",
     "@types/react": "latest",
-    "@types/prop-types": "latest",
 
     "jest": "latest",
     "@types/jest": "latest",
@@ -62,7 +61,7 @@
     "@types/enzyme": "latest",
     "enzyme-adapter-react-16": "latest",
     "@types/enzyme-adapter-react-16": "latest",
-    "react-dom": "next",
+    "react-dom": "latest",
 
     "js-beautify": "latest",
     "@types/js-beautify": "latest",

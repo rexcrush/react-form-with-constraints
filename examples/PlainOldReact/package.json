@@ -23,8 +23,8 @@
   "dependencies": {
     "react-scripts": "latest",
 
-    "react": "next",
-    "react-dom": "next"
+    "react": "latest",
+    "react-dom": "latest"
   },
 
   "devDependencies": {

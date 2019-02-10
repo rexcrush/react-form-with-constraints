@@ -24,8 +24,8 @@
   "dependencies": {
     "react-scripts": "latest",
 
-    "react": "next",
-    "react-dom": "next",
+    "react": "latest",
+    "react-dom": "latest",
 
     "react-form-with-constraints": "^0.11.0",
     "react-form-with-constraints-tools": "^0.11.0",
