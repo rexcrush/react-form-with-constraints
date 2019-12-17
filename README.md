@@ -16,7 +16,7 @@ Check the [changelog](CHANGELOG.md) for breaking changes and fixes between relea
 
 ## Introduction: what is HTML5 form validation?
 
-⚠️ [Client side validation is cosmetic, you should not rely on it to enforce security](https://stackoverflow.com/q/162159)
+⚠️ [Client side validation is cosmetic, you should not rely on it to enforce security](https://repl.it/badge/github/tkrotoff/react-form-with-constraints)](https://repl.it/github/tkrotoff/react-form-with-constraints))
 
 ```HTML
 <form>
